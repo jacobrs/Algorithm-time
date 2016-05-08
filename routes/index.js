@@ -4,7 +4,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	viewUtils.load(res, 'index', {other: 'AT Dynamic content'});
+	viewUtils.load(res, 'index');
 });
 
 module.exports = router;

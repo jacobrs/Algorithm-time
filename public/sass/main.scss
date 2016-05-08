@@ -1,0 +1,25 @@
+@import 'global';
+
+.main-title {
+	margin-top: 100px;
+	margin-bottom: 100px;
+}
+
+.main-menu {
+	border: solid 1px #ccc;
+}
+
+.main-menu a {
+	font-size: $medium_links;
+	color: black;
+	font-weight: bold;
+}
+
+.register-form {
+	margin-top: 100px;
+}
+
+.top-messages {
+	padding: 10px;
+	margin-bottom: 10px;
+}
