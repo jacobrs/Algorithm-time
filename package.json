@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-	"readme": "node ./node_modules/.bin/node-readme"
+    "readme": "node ./node_modules/.bin/node-readme",
+    "sass": "node-sass -w public/sass/ -o public/stylesheets/",
+    "startdev": "nodemon ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -14,6 +16,8 @@
     "express": "~4.13.1",
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
+    "node-sass": "^3.7.0",
+    "nodemon": "^1.9.2",
     "serve-favicon": "~2.3.0"
   },
   "description": "",
