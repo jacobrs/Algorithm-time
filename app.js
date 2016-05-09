@@ -1,5 +1,5 @@
 // Global
-GLOBAL.__base = __dirname;
+global.__base = __dirname;
 
 // Require
 var express = require('express');
