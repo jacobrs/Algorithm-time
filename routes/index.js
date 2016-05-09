@@ -1,10 +1,12 @@
-var express = require('express');
-var viewUtils = require(__base + '/libs/viewUtils');
-var router = express.Router();
+module.exports = function(){
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-	viewUtils.load(res, 'index');
-});
+	var express = require('express');
+	var viewUtils = require(__base + '/libs/viewUtils');
+	var router = express.Router();
 
-module.exports = router;
+	router.get('/', function(req, res, next) {
+		viewUtils.load(res, 'index');
+	});
+
+	return router;
+}
