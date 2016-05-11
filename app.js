@@ -1,17 +1,20 @@
 // Global
 global.__base = __dirname;
+global.__base_url = "http://localhost:3000/";
 
 // Require
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var server = require('http').Server(app);
+app.io = require('socket.io')();
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var home = require('./routes/index')();
+
+// Routes
+var home = require('./routes/home')(app.io);
 var user = require('./routes/user')();
 
 // view engine setup
@@ -60,5 +63,10 @@ app.use(function(err, req, res, next) {
   });
 });
 
+
+// start listen with socket.io
+app.io.on('connection', function(socket){  
+  console.log('a user connected');
+});
 
 module.exports = app;
