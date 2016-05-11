@@ -5,7 +5,6 @@ module.exports = function(io){
 	var router = express.Router();
 
 	router.get('/', function(req, res, next) {
-
 		viewUtils.load(res, 'index');
 	});
 

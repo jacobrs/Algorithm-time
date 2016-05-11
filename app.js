@@ -67,6 +67,12 @@ app.use(function(err, req, res, next) {
 // start listen with socket.io
 app.io.on('connection', function(socket){  
   console.log('a user connected');
+  app.io.sockets.emit('user_count', app.io.engine.clientsCount);
+
+  socket.on('disconnect', function(){
+    app.io.sockets.emit('user_count', app.io.engine.clientsCount);
+    console.log('a user disconnect');
+  });
 });
 
 module.exports = app;
