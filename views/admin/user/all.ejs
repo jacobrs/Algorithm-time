@@ -1,0 +1,23 @@
+<div class="col-md-offset-4 col-md-4">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Nickname</th>
+				<th>Full name</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% i=1; %>
+			<% users.forEach(function(user) { %>
+				<tr>
+					<td><%= i++ %></td>
+					<td><%= user.nickname %></td>
+					<td><%= user.fullname %></td>
+					<td><%= user.email %></td>
+				</tr>
+			<% }); %>			
+		</tbody>
+	</table>
+</div>

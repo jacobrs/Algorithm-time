@@ -22,3 +22,17 @@ body {
 
 .user-count {
   margin-top: 10px; }
+
+.menu {
+  color: white;
+  background-color: black;
+  padding: 14px; }
+
+.menu a {
+  color: white;
+  font-weight: bold; }
+
+.logo-menu {
+  color: white;
+  font-weight: bold;
+  font-size: 20px; }

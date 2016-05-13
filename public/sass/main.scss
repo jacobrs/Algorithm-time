@@ -27,3 +27,20 @@
 .user-count {
 	margin-top:10px;
 }
+
+.menu {
+	color: white;
+	background-color: black;
+	padding: $normal;
+}
+
+.menu a {
+	color: white;
+	font-weight: bold;
+}
+
+.logo-menu {
+	color: white;
+	font-weight: bold;
+	font-size: $medium_links;
+}
