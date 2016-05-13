@@ -2,7 +2,7 @@
 
 ## Install
 
-`npm install --save algorithm-time`
+`npm install`
 
 
 ## Scripts
