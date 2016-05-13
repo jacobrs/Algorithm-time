@@ -22,8 +22,15 @@ mongoose.connect(__db_url);
 models.user_model = require('./models/user_model.js');
 
 // Drop old table
-mongoose.connection.db.dropDatabase();
-console.log("Old DB dropped");
+mongoose.connection.on('open', function(){
+    mongoose.connection.db.dropDatabase(function(err){
+      if(err) {
+        console.log(err);
+      } else {
+        console.log("Old DB dropped");
+      }
+    });
+});
 
 // Routes
 var home = require('./routes/home')(models);
