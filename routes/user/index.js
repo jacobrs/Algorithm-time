@@ -16,6 +16,7 @@ module.exports = function(models) {
 
 		// Create a new user
 		var user = new models.user_model;
+		err_msg = "";
 		
 		// Set the data
 		user.nickname = req.body.nickname;
@@ -30,15 +31,27 @@ module.exports = function(models) {
 
 			// One word only
 			if(user.nickname.split(' ').length == 1) {
-				// Save new user
-				user.save(function(err) {
-					if(err){
-						viewUtils.load(res, 'user/register', {error_msg: "Couldn't connect to DB. Try again."});
-						console.log("Coudn't save user to DB: " + err);
+
+				// Check if it's unique
+				models.user_model.find({nickname: user.nickname}, function(err, users){
+					
+					// Already exists
+					if(users.length > 0) {
+						viewUtils.load(res, 'user/register', {error_msg: "This nickname already exists, please type another one"});
 					} else {
-						viewUtils.load(res, 'user/register', {success_msg: "Registered successfully"});
+
+						// Save new user
+						user.save(function(err) {
+							if(err){
+								viewUtils.load(res, 'user/register', {error_msg: "Couldn't connect to DB. Try again."});
+								console.log("Coudn't save user to DB: " + err);
+							} else {
+								viewUtils.load(res, 'user/register', {success_msg: "Registered successfully"});
+							}
+						});
 					}
 				});
+
 			} else {
 				viewUtils.load(res, 'user/register', {error_msg: "Nickname should not contain spaces"});
 			}
