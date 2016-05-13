@@ -6,18 +6,28 @@
 				<th>Nickname</th>
 				<th>Full name</th>
 				<th>Email</th>
+				<th>Delete</th>
 			</tr>
 		</thead>
 		<tbody>
-			<% i=1; %>
-			<% users.forEach(function(user) { %>
+			<% if(users == null) { %>
 				<tr>
-					<td><%= i++ %></td>
-					<td><%= user.nickname %></td>
-					<td><%= user.fullname %></td>
-					<td><%= user.email %></td>
+					<td colspan="5">
+						Error loading this page
+					</td>
 				</tr>
-			<% }); %>			
+			<% } else { %>
+				<% i=1; %>
+				<% users.forEach(function(user) { %>
+					<tr>
+						<td><%= i++ %></td>
+						<td><%= user.nickname %></td>
+						<td><%= user.fullname %></td>
+						<td><%= user.email %></td>
+						<td><a href="<%=base_url%>/admin/user/delete/<%=encodeURIComponent(user.nickname)%>">Delete</a></td>
+					</tr>
+				<% }); %>			
+			<% } %>			
 		</tbody>
 	</table>
 </div>

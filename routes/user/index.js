@@ -18,9 +18,9 @@ module.exports = function(models) {
 		var user = new models.user_model;
 		
 		// Set the data
-		user.nickname = "Nickname";
-		user.fullanme = "Nickname";
-		user.email = "Email";
+		user.nickname = req.body.nickname;
+		user.fullname = req.body.fullname;
+		user.email = req.body.email;
 
 		// Logging
 		console.log("Registration form submitted: " + user);
