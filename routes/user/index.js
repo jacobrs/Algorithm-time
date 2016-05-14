@@ -22,9 +22,10 @@ module.exports = function(models) {
 		user.nickname = req.body.nickname;
 		user.fullname = req.body.fullname;
 		user.email = req.body.email;
+		user.password = req.body.password;
 
 		// Logging
-		console.log("Registration form submitted: " + user);
+		console.log("Registration form submitted: " + user.nickname);
 
 		// If no nickname selected
 		if(user.nickname !== undefined && user.nickname.trim() != '') {
@@ -59,6 +60,10 @@ module.exports = function(models) {
 		} else {
 			viewUtils.load(res, 'user/register', {error_msg: "Nickname is required"});
 		}
+	});
+
+	router.get('/login', function(req, res, next) {
+		viewUtils.load(res, 'user/login');
 	});
 
 	return router;
