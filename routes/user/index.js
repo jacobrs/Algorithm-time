@@ -12,6 +12,11 @@ module.exports = function(models) {
 		viewUtils.load(res, 'user/register');
 	});
 
+	router.get('/error', function(req, res, next){
+		data = {error: {message: "Oups :(", stack: "There seems to be an error with this page."}};
+		viewUtils.load(res, 'error', data);
+	});
+
 	router.post('/register', function(req, res, next) {
 
 		// Create a new user
