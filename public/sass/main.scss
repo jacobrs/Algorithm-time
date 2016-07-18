@@ -1,8 +1,10 @@
 @import 'global';
 
+$primary-color:#932439;
+
 .main-title {
-	margin-top: 100px;
-	margin-bottom: 100px;
+	margin-top: 4em;
+	margin-bottom: 4em;
 }
 
 .main-menu {
@@ -15,10 +17,6 @@
 	font-weight: bold;
 }
 
-.register-form {
-	margin-top: 100px;
-}
-
 .top-messages {
 	padding: 10px;
 	margin-bottom: 10px;
@@ -29,14 +27,21 @@
 }
 
 .menu {
+	line-height: 40px;
 	color: white;
-	background-color: black;
+	background-color: $primary-color;
 	padding: $normal;
 }
 
 .menu a {
+	line-height: 40px;
 	color: white;
 	font-weight: bold;
+}
+
+.menubar-icon{
+	height:40px;
+	float:left;
 }
 
 .logo-menu {
