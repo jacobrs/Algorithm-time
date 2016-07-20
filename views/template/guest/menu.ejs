@@ -1,15 +1,22 @@
 <div class="row menu">
 	<div class="col-md-12">
+
 		<span class="logo-menu col-md-4">
 		<img src="<%=__base_url%>/favicon.ico" class="menubar-icon"/>
 		&nbsp;&nbsp;&nbsp;&nbsp;<a href="<%=__base_url%>">Algorithm Time</a></span>
 
 		<div class="text-right col-md-8">
-			<a href="<%=__base_url%>">Home</a> |
-			<a href="<%=__base_url%>/leaderboard">Leaderboard</a>
-			<% if(loggedIn == true) { %>
-				| <a href="<%=__base_url%>/user/logout">Logout</a>
-			<% } %>
+			<ul class="nav nav-pills">
+				<% if(loggedIn == true) { %>
+					<li role="presentation"><a href="<%=__base_url%>/user/logout">Logout</a></li>
+				<% } %>	
+				<li role="presentation" 
+				<% if(main_page.split("/").pop() == "leaderboard"){ %> class="active" <% } %>
+				><a href="<%=__base_url%>/leaderboard">Leaderboard</a></li>
+				<li role="presentation" 
+				<% if(main_page.split("/").pop() == "index"){ %> class="active" <% } %>
+				><a href="<%=__base_url%>">Home</a></li>
+			</ul>
 		</div>
 	</div>
 </div>

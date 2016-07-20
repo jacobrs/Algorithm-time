@@ -24,6 +24,7 @@ $primary-color:#932439;
 
 .user-count {
 	margin-top:10px;
+	margin-bottom:2em;
 }
 
 .menu {
@@ -48,4 +49,35 @@ $primary-color:#932439;
 	color: white;
 	font-weight: bold;
 	font-size: $medium_links;
+}
+
+.nav>li>a{
+	padding:0px 15px;
+}
+
+.nav-pills>li{
+	float:right;
+}
+
+.nav>li>a:focus, .nav>li>a:hover{
+	background-color:white;
+	color:$primary-color;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{	
+	background-color:white;
+	color:$primary-color;
+}
+
+.nav-pills>li{
+	margin-left: 2px;
+}
+
+table{
+	border:1px solid #ddd;
+}
+
+.form-control:focus{
+	border-color:$primary-color;
+	box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(147,36,57,.6);
 }
