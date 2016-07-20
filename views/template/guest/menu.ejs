@@ -6,9 +6,10 @@
 
 		<div class="text-right col-md-8">
 			<a href="<%=__base_url%>">Home</a> |
-			<a href="<%=__base_url%>/user/all">Users</a> |
-			<a href="<%=__base_url%>/leaderboard">Leaderboard</a> |
-			<a href="<%=__base_url%>/user/logout">Logout</a>
+			<a href="<%=__base_url%>/leaderboard">Leaderboard</a>
+			<% if(loggedIn == true) { %>
+				| <a href="<%=__base_url%>/user/logout">Logout</a>
+			<% } %>
 		</div>
 	</div>
 </div>

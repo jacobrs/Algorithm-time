@@ -5,15 +5,20 @@ module.exports = function(models) {
 	var router = express.Router();
 
 	router.get('/', function(req, res, next) {
+		data = {};
+		data = viewUtils.populateSessionData(req, data);
 	  res.send('All users');
 	});
 
 	router.get('/register', function(req, res, next) {
+		data = {};
+		data = viewUtils.populateSessionData(req, data);
 		viewUtils.load(res, 'user/register');
 	});
 
 	router.get('/error', function(req, res, next){
 		data = {error: {message: "Oups :(", stack: "There seems to be an error with this page."}};
+		data = viewUtils.populateSessionData(req, data);
 		viewUtils.load(res, 'error', data);
 	});
 
@@ -28,6 +33,8 @@ module.exports = function(models) {
 		user.fullname = req.body.fullname;
 		user.email = req.body.email;
 		user.password = req.body.password;
+		user.score = 0;
+		user.lastLogin = "Never";
 
 		// Logging
 		console.log("Registration form submitted: " + user.nickname);
@@ -52,7 +59,7 @@ module.exports = function(models) {
 								viewUtils.load(res, 'user/register', {error_msg: "Couldn't connect to DB. Try again."});
 								console.log("Coudn't save user to DB: " + err);
 							} else {
-								viewUtils.load(res, 'user/register', {success_msg: "Registered successfully"});
+								viewUtils.load(res, 'user/login', {success_msg: "Successfully registered, please login."});
 							}
 						});
 					}
@@ -77,9 +84,28 @@ module.exports = function(models) {
 			if(users.length < 1 || users.length > 1){
 				viewUtils.load(res, 'user/login', {error_msg: "Invalid Login"});
 			}else{
-				viewUtils.load(res, 'user/login', {success_msg: "Welcome " + users[0].fullname});
+				var session = new models.session_model;
+				session.key = "tweresde";
+				var userSession = users[0];
+				userSession.password = null;
+				session.user = userSession;
+				session.ip = "";
+				session.expiration = "";
+				res.cookie("session", session);
+				var d = new Date();
+				users[0].lastLogin = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
+				users[0].save(function(err) {
+					res.redirect("../leaderboard");
+				});
 			}
 		});
+	});
+
+	router.get('/logout', function(req, res, next) {
+		res.clearCookie("session");
+		data = {};
+		data = viewUtils.populateSessionData(req, data);
+		res.redirect("/");
 	});
 
 	return router;
