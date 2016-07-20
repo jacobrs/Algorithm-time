@@ -20,16 +20,21 @@ var models = {};
 console.log("Connected to: " + __db_url);
 mongoose.connect(__db_url);
 models.user_model = require('./models/user_model.js');
+models.session_model = require('./models/session_model.js');
+
+var dropOldDatabaseOnStartup = false;
 
 // Drop old table
 mongoose.connection.on('open', function(){
-    mongoose.connection.db.dropDatabase(function(err){
-      if(err) {
-        console.log(err);
-      } else {
-        console.log("Old DB dropped");
-      }
-    });
+    if(dropOldDatabaseOnStartup){
+      mongoose.connection.db.dropDatabase(function(err){
+        if(err) {
+          console.log(err);
+        } else {
+          console.log("Old DB dropped");
+        }
+      }); 
+    }
 });
 
 // Routes
@@ -47,7 +52,7 @@ app.set('view cache', false);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser("algotime"));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', home);
