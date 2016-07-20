@@ -22,6 +22,10 @@ module.exports = function(models) {
 		viewUtils.load(res, 'error', data);
 	});
 
+	router.get('/guest', function(req, res, next){
+		res.redirect('/error');
+	});
+
 	router.post('/register', function(req, res, next) {
 
 		// Create a new user
@@ -87,12 +91,14 @@ module.exports = function(models) {
 				var session = new models.session_model;
 				session.key = "tweresde";
 				var userSession = users[0];
+				var password = users[0].password;
 				userSession.password = null;
 				session.user = userSession;
 				session.ip = "";
 				session.expiration = "";
 				res.cookie("session", session);
 				var d = new Date();
+				users[0].password = password;
 				users[0].lastLogin = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
 				users[0].save(function(err) {
 					res.redirect("../leaderboard");

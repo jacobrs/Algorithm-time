@@ -1,12 +1,32 @@
 <div class="text-center main-title">
-	<h1>Welcome to <b>SCS Algorithm Time</b></h1>
+	<h2>Welcome to <b>SCS Algorithm Time</b></h2>
 </div>
 
-<div class="text-center col-md-4 col-md-offset-4 main-menu">
-	<p class="row">
-		<a href="user/guest" class="row">Login as guest</a>
-		<a href="user/login" class="row">Login</a>
-		<a href="user/register" class="row">Register</a>
-		<a href="leaderboard" class="row">Leaderboard</a>
-	</p>
+<div class="col-md-6 col-md-offset-3">
+	<div class="list-group">
+		<% if(loggedIn == false) { %>
+		<a href="user/login" class="list-group-item">
+			<h4 class="list-group-item-heading">Login as a Regular</h4>
+			<p class="list-group-item-text">Keep the points you earn and appear on the leaderboard!</p>
+		</a>
+		<a href="user/register" class="list-group-item">
+			<h4 class="list-group-item-heading">Register to Algorithm Time</h4>
+			<p class="list-group-item-text">Register to compete against your peers!</p>
+		</a>
+		<a href="user/guest" class="list-group-item">
+			<h4 class="list-group-item-heading">Login as guest</h4>
+			<p class="list-group-item-text">Collect points during a session but this won't save your progress</p>
+		</a>
+		<% } %>
+		<a href="leaderboard" class="list-group-item">
+			<h4 class="list-group-item-heading">Leaderboard</h4>
+			<p class="list-group-item-text">View the top problem solvers and how you rank.</p>
+		</a>
+		<% if(loggedIn != false) { %>
+		<a href="user/logout" class="list-group-item">
+			<h4 class="list-group-item-heading">Logout</h4>
+			<p class="list-group-item-text">Secure your points by logging out.</p>
+		</a>
+		<% }%>
+	</div>
 </div>
