@@ -12,6 +12,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var cookie = require('cookie');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
@@ -23,6 +24,7 @@ models.user_model = require('./models/user_model.js');
 models.session_model = require('./models/session_model.js');
 
 var dropOldDatabaseOnStartup = false;
+var clients = [];
 
 // Drop old table
 mongoose.connection.on('open', function(){
@@ -52,7 +54,7 @@ app.set('view cache', false);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser("algotime"));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', home);
@@ -93,12 +95,21 @@ app.use(function(err, req, res, next) {
 
 
 // start listen with socket.io
-app.io.on('connection', function(socket){  
-  console.log('a user connected');
-  app.io.sockets.emit('user_count', app.io.engine.clientsCount);
+app.io.on('connection', function(socket){
+  var cookief = socket.handshake.headers.cookie;
+  var cookies = cookieParser.JSONCookies(cookie.parse(socket.handshake.headers.cookie));
+  var user = (cookies.session == undefined)?"guest":cookies.session.user.nickname;
+  if(clients.indexOf(user) == -1){
+    clients.push(user);
+  }
+  console.log(clients);
+  app.io.sockets.emit('user_count', clients.length);
 
-  socket.on('disconnect', function(){
-    app.io.sockets.emit('user_count', app.io.engine.clientsCount);
+  socket.on('disconnect', function(socket){
+    if(!clients.indexOf(user) > -1){
+      clients.splice(clients.indexOf(user), 1);
+    }
+    app.io.sockets.emit('user_count', clients.length);
     console.log('a user disconnect');
   });
 });
