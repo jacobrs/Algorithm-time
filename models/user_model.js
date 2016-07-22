@@ -8,6 +8,7 @@ var userModel = new mongoose.Schema({
 	password: String,
 	score: Number,
 	lastLogin: String,
+	level: Number,
 	date: Date
 });
 
