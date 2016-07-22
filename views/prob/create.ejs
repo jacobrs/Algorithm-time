@@ -1,0 +1,45 @@
+<div class="col-md-offset-4 col-md-4">
+	<div class="create-prob">
+		<div class="main-title">
+			<h3 >Create problem</h3>
+		</div>
+
+		<form method="POST" action="create">
+
+			<% if(typeof success_msg != 'undefined') { %>
+			<div class="top-messages bg-success"><%= success_msg %></div>
+			<% } %>
+
+			<% if(typeof error_msg != 'undefined') { %>
+			<p class="top-messages bg-danger"><%= error_msg %></p>
+			<% } %>
+
+			<div class="form-group">
+				<label for="title">Title <span class="text-danger">*</span></label>
+				<input name="title" type="text" class="form-control" id="title" placeholder="Room title">
+			</div>
+			<div class="form-group">
+				<label for="description">Description</label>
+				<textarea name="description" class="form-control" id="description" placeholder="Room description ..."></textarea>
+			</div>
+			<div class="form-group">
+				<div class="col-md-6">
+						<label for="score">Score <span class="text-danger">*</span></label>
+						<input name="score" class="form-control" id="score" placeholder="Score"/>
+				</div>
+				<div class="col-md-6">
+					<label for="room">Room <span class="text-danger">*</span></label>
+					<select id="room" name="room" class="form-control">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="text-danger form-group">* Required field</div>
+			<button type="submit" class="btn btn-default">Create problem</button>
+			<a href="<%= base_url%>" class="btn btn-default">Cancel</a>
+		</form>
+	</div>
+</div>

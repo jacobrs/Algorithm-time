@@ -43,6 +43,7 @@ mongoose.connection.on('open', function(){
 var home = require('./routes/home')(models);
 var user = require('./routes/user/index')(models);
 var room = require('./routes/room/index')(models);
+var prob = require('./routes/prob/index')(models);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -59,6 +60,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', home);
 app.use('/user', user);
 app.use('/room', room);
+app.use('/prob', prob);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
