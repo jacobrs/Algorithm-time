@@ -16,15 +16,15 @@
 
 			<div class="form-group">
 				<label for="nickname">Nickname <span class="text-danger">*</span></label>
-				<input name="nickname" type="text" class="form-control" id="nickname" placeholder="Nickname">
+				<input name="nickname" type="text" class="form-control" id="nickname" placeholder="Nickname" value="<%= user.nickname %>">
 			</div>
 			<div class="form-group">
 				<label for="name">Full name (for leaderboard) </label>
-				<input name="fullname" type="text" class="form-control" id="name" placeholder="Full name">
+				<input name="fullname" type="text" class="form-control" id="name" placeholder="Full name" value="<%= user.fullname %>">
 			</div>
 			<div class="form-group">
 				<label for="email">Email (will remain hidden) <span class="text-danger">*</span></label>
-				<input name="email" type="text" class="form-control" id="email" placeholder="Email">
+				<input name="email" type="text" class="form-control" id="email" placeholder="Email" value="<%= user.email %>">
 			</div>
 			<div class="form-group">
 				<label for="password">Password <span class="text-danger">*</span></label>

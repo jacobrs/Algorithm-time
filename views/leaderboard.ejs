@@ -15,7 +15,7 @@
 				<td><%= i+1 %></td>
 		  	<td><%= users[i].nickname %></td>
 		  	<td><%= users[i].fullname %></td>
-		  	<td><%= users[i].lastLogin %></td>
+		  	<td><%= months[users[i].lastLogin.getMonth()] + " " +users[i].lastLogin.getDate() + ", " + users[i].lastLogin.getFullYear()%></td>
 		  	<td><%= users[i].score %></td>
 		  </tr>
 		<% } %>

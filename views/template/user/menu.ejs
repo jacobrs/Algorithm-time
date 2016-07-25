@@ -8,7 +8,17 @@
 		<div class="text-right col-md-8">
 			<ul class="nav nav-pills">
 				<% if(loggedIn == true) { %>
-					<li role="presentation"><a href="<%=__base_url%>/user/logout">Logout</a></li>
+					<div class='btn-group' style='line-height:40px; float:right; height:40px; margin-left: 2px;'>
+					  <button type="button" class="btn btn-default dropdown-toggle clear-btn" style="height:40px"
+					  	data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    <%= user.fullname %>&nbsp;&nbsp; <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu">
+					    <li><a href="#">Profile</a></li>
+					    <li role="separator" class="divider"></li>
+					    <li><a href="<%=__base_url%>/user/logout">Logout</a></li>
+					  </ul>
+					</div>
 				<% } %>	
 				<li role="presentation" 
 				<% if(main_page.split("/").pop() == "leaderboard"){ %> class="active" <% } %>

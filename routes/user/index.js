@@ -3,6 +3,31 @@ module.exports = function(models) {
 	var express = require('express');
 	var viewUtils = require(__base + '/libs/viewUtils');
 	var router = express.Router();
+	var sha256 = require('js-sha256');
+
+	function generateRandomKey(N /* size of the key */){
+		return Array(N+1).join((Math.random().toString(36)+'00000000000000000').slice(2, 18)).slice(0, N);
+	}
+
+	function getAKeyAndRedirect(session, key, user, res){
+		models.session_model.find({key: key}, function(err, keys){
+			if(keys.length > 0){
+				console.log("Key collision handled");
+				var newkey = generateRandomKey(120);
+				getAKeyAndRedirect(session, newkey, user, res);
+			}else{
+				session.key = key;
+				res.cookie("session", session);
+				session.id = user._id;
+				user.lastLogin = new Date();
+				user.save(function(err) {
+					session.save(function(err) {
+						res.redirect("../leaderboard");
+					});
+				});
+			}
+		});
+	}
 
 	router.get('/', function(req, res, next) {
 		data = {};
@@ -12,6 +37,11 @@ module.exports = function(models) {
 
 	router.get('/register', function(req, res, next) {
 		data = {};
+		user = {};
+		user.nickname = "";
+		user.fullname = "";
+		user.email = "";
+		data.user = user;
 		data = viewUtils.populateSessionData(req, data);
 		viewUtils.load(res, 'user/register');
 	});
@@ -31,14 +61,16 @@ module.exports = function(models) {
 		// Create a new user
 		var user = new models.user_model;
 		err_msg = "";
-		
+
 		// Set the data
-		user.nickname = req.body.nickname;
+		user.nickname = req.body.nickname.toLowerCase();
 		user.fullname = req.body.fullname;
-		user.email = req.body.email;
-		user.password = req.body.password;
+		user.email = req.body.email.toLowerCase();
+		user.password = sha256(req.body.password);
 		user.score = 0;
-		user.lastLogin = "Never";
+		user.date = new Date();
+		user.level = 2;
+		user.lastLogin = null;
 
 		// Logging
 		console.log("Registration form submitted: " + user.nickname);
@@ -50,11 +82,15 @@ module.exports = function(models) {
 			if(user.nickname.split(' ').length == 1) {
 
 				// Check if it's unique
-				models.user_model.find({nickname: user.nickname}, function(err, users){
+				models.user_model.find({ $or: [{nickname: user.nickname}, {email: user.email}]}, function(err, users){
 					
 					// Already exists
 					if(users.length > 0) {
-						viewUtils.load(res, 'user/register', {error_msg: "This nickname already exists, please type another one"});
+						var message = "This nickname already exists, please type another one";
+						if(users[0].email == user.email){
+							message = "This email already exists, please type another one";
+						}
+						viewUtils.load(res, 'user/register', {error_msg: message, user: user});
 					} else {
 
 						// Save new user
@@ -83,35 +119,34 @@ module.exports = function(models) {
 	});
 
 	router.post('/login', function(req, res, next) {
-		models.user_model.find({nickname: req.body.nickname, password: req.body.password}, function(err, users){
+		models.user_model.find({nickname: req.body.nickname, password: sha256(req.body.password)}, function(err, users){
 			// not valid credentials
 			if(users.length < 1 || users.length > 1){
 				viewUtils.load(res, 'user/login', {error_msg: "Invalid Login"});
 			}else{
+				var user = users[0];
 				var session = new models.session_model;
-				session.key = "tweresde";
-				var userSession = users[0];
-				var password = users[0].password;
-				userSession.password = null;
-				session.user = userSession;
-				session.ip = "";
-				session.expiration = "";
-				res.cookie("session", session);
-				var d = new Date();
-				users[0].password = password;
-				users[0].lastLogin = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
-				users[0].save(function(err) {
-					res.redirect("../leaderboard");
-				});
+				var key = generateRandomKey(120);
+
+				getAKeyAndRedirect(session, key, user, res);
 			}
 		});
 	});
 
 	router.get('/logout', function(req, res, next) {
-		res.clearCookie("session");
-		data = {};
-		data = viewUtils.populateSessionData(req, data);
-		res.redirect("/");
+		if(req.cookies.session != undefined){
+			try{
+				models.session_model.remove({key: req.cookies.session.key}, function(err, status){
+					res.clearCookie("session");
+					res.redirect("/");
+				});
+			}catch(e){
+				console.log(e);
+				res.redirect("/");
+			}
+		}else{
+			res.redirect("/");
+		}
 	});
 
 	return router;
