@@ -96,9 +96,21 @@ app.use(function(err, req, res, next) {
 
 // start listen with socket.io
 app.io.on('connection', function(socket){
-  var cookief = socket.handshake.headers.cookie;
-  var cookies = cookieParser.JSONCookies(cookie.parse(socket.handshake.headers.cookie));
-  var user = (cookies.session == undefined)?"guest":cookies.session.user.nickname;
+  var user = "guest";
+  try{
+    var cookief = socket.request.headers.cookie;
+    var cookies = cookieParser.JSONCookies(cookie.parse(cookief));
+    if(cookies.session == undefined){
+      throw new Error("Undefined cookie");
+    }
+    user = cookies.session.key;
+  }catch(e){
+    var mod = 1;
+    while(clients.indexOf(user+mod) != -1){
+      mod++;
+    }
+    user = user+mod;
+  }
   if(clients.indexOf(user) == -1){
     clients.push(user);
   }

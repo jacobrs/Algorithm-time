@@ -47,9 +47,9 @@ body {
 .nav-pills > li {
   float: right; }
 
-.nav > li > a:focus, .nav > li > a:hover {
-  background-color: white;
-  color: #932439; }
+.nav > li > a:focus, .nav > li > a:hover, .clear-btn:hover {
+  background-color: white !important;
+  color: #932439 !important; }
 
 .nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
   background-color: white;
@@ -64,3 +64,10 @@ table {
 .form-control:focus {
   border-color: #932439;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(147, 36, 57, 0.6); }
+
+.clear-btn, .clear-btn:active, .clear-btn:focus {
+  float: right;
+  color: white;
+  font-weight: bold;
+  border: none;
+  background-color: transparent; }

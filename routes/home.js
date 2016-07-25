@@ -6,20 +6,24 @@ module.exports = function(models){
 
 	router.get('/', function(req, res, next) {
 		data = {};
-		data = viewUtils.populateSessionData(req, data);
-		viewUtils.load(res, 'index', data);
+		viewUtils.initializeSession(req, data, models, function(data){
+			viewUtils.load(res, 'index', data);
+		});
 	});
 
 	router.get('/leaderboard', function(req, res, next){
-		var currUser = "";
-		if(typeof req.cookies.session != "undefined"){
-			currUser = req.cookies.session.user.nickname;
-		}
-		models.user_model.find({}, function(error, users){
-			data = {users: users, currentUser: currUser};
-			data = viewUtils.populateSessionData(req, data);
-			viewUtils.load(res, 'leaderboard', data);
-		}).sort( { score: -1 } );
+		data = {};
+		viewUtils.initializeSession(req, data, models, function(data){
+			var currUser = "";
+			if(typeof data.user != "undefined"){
+				currUser = data.user.nickname;
+			}
+			models.user_model.find({}, function(error, users){
+				data.users = users;
+				data.currentUser = currUser;
+				viewUtils.load(res, 'leaderboard', data);
+			}).sort( { score: -1 } );
+		});
 	});
 
 	router.get('/error', function(req, res, next){
