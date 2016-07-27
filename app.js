@@ -15,6 +15,7 @@ var cookieParser = require('cookie-parser');
 var cookie = require('cookie');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var xss = require('xss');
 
 // Connect to DB
 var models = {};
@@ -22,6 +23,9 @@ console.log("Connected to: " + __db_url);
 mongoose.connect(__db_url);
 models.user_model = require('./models/user_model.js');
 models.session_model = require('./models/session_model.js');
+models.room_model = require('./models/room_model.js');
+models.user_prob_model = require('./models/user_prob_model.js');
+models.prob_model = require('./models/prob_model.js');
 
 var dropOldDatabaseOnStartup = false;
 var clients = [];
@@ -89,7 +93,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
-    error: {}
+    error: err
   });
 });
 

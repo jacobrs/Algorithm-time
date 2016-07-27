@@ -1,10 +1,12 @@
 var mongoose = require('mongoose');
 
-var roomModel = new mongoose.Schema({
+var probModel = new mongoose.Schema({
 	id: Number,
 	title: String,
+	score: Number,
+	room: Number,
 	description: String,
 	date: Date
 });
 
-module.exports = mongoose.model('room', roomModel);
+module.exports = mongoose.model('probs', probModel);

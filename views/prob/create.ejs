@@ -1,10 +1,9 @@
-<div class="col-md-offset-4 col-md-4">
+<div class="col-md-offset-3 col-md-6">
 	<div class="create-prob">
-		<div class="main-title">
-			<h3 >Create problem</h3>
-		</div>
-
-		<form method="POST" action="create">
+		<br>
+		<h3 >Create problem</h3>
+		<br>
+		<form method="POST" action="./">
 
 			<% if(typeof success_msg != 'undefined') { %>
 			<div class="top-messages bg-success"><%= success_msg %></div>
@@ -16,25 +15,23 @@
 
 			<div class="form-group">
 				<label for="title">Title <span class="text-danger">*</span></label>
-				<input name="title" type="text" class="form-control" id="title" placeholder="Room title">
+				<input name="title" type="text" class="form-control" id="title" placeholder="Problem title">
 			</div>
 			<div class="form-group">
-				<label for="description">Description</label>
-				<textarea name="description" class="form-control" id="description" placeholder="Room description ..."></textarea>
+				<label for="roomtitle">Room <span class="text-danger">*</span></label>
+				<input name="roomtitle" type="text" class="form-control" id="roomtitle" value="<%= room.title %>" readonly>
+			</div>
+			<div class="form-group hidden">
+				<label for="room">Room <span class="text-danger">*</span></label>
+				<input name="room" type="hidden" class="form-control" id="room" value="<%= room.room %>" readonly>
 			</div>
 			<div class="form-group">
-				<div class="col-md-6">
-						<label for="score">Score <span class="text-danger">*</span></label>
-						<input name="score" class="form-control" id="score" placeholder="Score"/>
-				</div>
-				<div class="col-md-6">
-					<label for="room">Room <span class="text-danger">*</span></label>
-					<select id="room" name="room" class="form-control">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-					</select>
-				</div>
+				<label for="description">Description <span class="text-danger">*</span></label>
+				<textarea name="description" class="form-control" id="description" style="height:8em;"placeholder="Define the problem"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="score">Score <span class="text-danger">*</span></label>
+				<input name="score" class="form-control" id="score" placeholder="Score"/>
 			</div>
 
 			<div class="text-danger form-group">* Required field</div>

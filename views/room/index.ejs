@@ -1,0 +1,26 @@
+<div class="col-md-offset-4 col-md-4">
+	<br><br>
+	<div class="panel panel-default">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading"><strong><%= room.title %></strong><span class="label label-success right"><%= room.points %> points</span></div>
+	  <div class="panel-body">
+	    <p><%= room.description %></p>
+	  </div>
+
+	  <!-- List group -->
+	  <div class="panel-heading" style="border-top:1px solid rgb(221, 221, 221); border-radius:0px;">Problem List</div>
+	  <div class="list-group">
+	  	<% for(var i=0; i<probs.length; i++) {%>
+	  		<a href="<%= __base_url %>/prob/<%= probs[i].id %>" class="list-group-item"><%=probs[i].title%>
+	  		<span class="right"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;&nbsp;<%= probs[i].score%></span></a>
+	  	<% }%>
+
+	    <% if(user.level == 0) { %>
+	    <a href="<%= __base_url %>/prob/create/<%= room.room %>" class="list-group-item">
+	    	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;&nbsp;Add Problem
+	    </a>
+	    <% } %>
+
+	  </div>
+	</div>
+</div>

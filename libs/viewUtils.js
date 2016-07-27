@@ -38,7 +38,7 @@ utils.load = function(res, page, data) {
 	data.base_url = __base_url;
 	data.loggedIn = (data.loggedIn == undefined || !data.loggedIn)?false:true;
 
-	if(page == "leaderboard"){
+	if(page == "leaderboard" || page == "room/all"){
 		data.months = ["January", "February", "March", "April", "May", "June", "July", "August", "Septembter", "October", "November", "December"];
 	}
 
