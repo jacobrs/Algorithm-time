@@ -1,0 +1,22 @@
+<div class="col-md-offset-3 col-md-6">
+	<br><br>
+	<div class="panel panel-default">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading"><strong><%= prob.title %></strong><span class="label label-success right"><%= prob.score %> points</span></div>
+	  <div class="panel-body">
+	    <p><%- prob.description %></p>
+	  </div>
+
+	  <!-- List group -->
+	  <div class="list-group">
+	    <% if(user.level != 6) { %>
+	    <a href="<%= __base_url %>/prob/review/<%= prob.id %>" class="list-group-item">
+	    	<span class="glyphicon glyphicon-flag" aria-hidden="true"></span>&nbsp;&nbsp;Ask for solution review 
+	    </a>
+	    <% } %>
+	    <a href="<%= __base_url %>/room/<%= prob.room %>" class="list-group-item">
+	    	<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>&nbsp;&nbsp;Back to room 
+	    </a>
+	  </div>
+	</div>
+</div>

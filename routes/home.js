@@ -7,7 +7,13 @@ module.exports = function(models){
 	router.get('/', function(req, res, next) {
 		data = {};
 		viewUtils.initializeSession(req, data, models, function(data){
-			viewUtils.load(res, 'index', data);
+			models.user_model.count({}, function(err, usercount){
+				data.usercount = usercount;
+				models.room_model.count({}, function(err, roomcount){
+					data.roomcount = roomcount;
+					viewUtils.load(res, 'index', data);
+				});
+			});
 		});
 	});
 

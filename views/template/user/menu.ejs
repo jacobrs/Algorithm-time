@@ -1,4 +1,4 @@
-<div class="row menu">
+<div class="row menu" style="margin:0;">
 	<div class="col-md-12">
 
 		<span class="logo-menu col-md-4">
@@ -11,21 +11,33 @@
 					<div class='btn-group' style='line-height:40px; float:right; height:40px; margin-left: 2px;'>
 					  <button type="button" class="btn btn-default dropdown-toggle clear-btn" style="height:40px"
 					  	data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;
 					    <%= user.fullname %>&nbsp;&nbsp; <span class="caret"></span>
 					  </button>
 					  <ul class="dropdown-menu">
 					    <li><a href="#">Profile</a></li>
+
+					    <% if(user.level == 0){ %>
+					    	<li><a href="<%=__base_url%>/room/create">Create Room</a></li>
+					    <% } %>
+
 					    <li role="separator" class="divider"></li>
 					    <li><a href="<%=__base_url%>/user/logout">Logout</a></li>
 					  </ul>
 					</div>
+					<li role="presentation" 
+					<% if(main_page.split("/").pop() == "all" && main_page.split("/")[main_page.split("/").length-2] == "room"){ %> class="active" <% } %>
+					><a href="<%=__base_url%>/room/all">
+					<span class="glyphicon glyphicon-education" aria-hidden="true"></span>&nbsp;&nbsp;Rooms</a></li>
 				<% } %>	
 				<li role="presentation" 
 				<% if(main_page.split("/").pop() == "leaderboard"){ %> class="active" <% } %>
-				><a href="<%=__base_url%>/leaderboard">Leaderboard</a></li>
+				><a href="<%=__base_url%>/leaderboard">
+				<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>&nbsp;&nbsp;Leaderboard</a></li>
 				<li role="presentation" 
-				<% if(main_page.split("/").pop() == "index"){ %> class="active" <% } %>
-				><a href="<%=__base_url%>">Home</a></li>
+				<% if(main_page.split("/").pop() == "index" && main_page.split("/")[main_page.split("/").length-2] != "room" && main_page.split("/")[main_page.split("/").length-2] != "prob"){ %> class="active" <% } %>
+				><a href="<%=__base_url%>">
+				<span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;&nbsp;Home</a></li>
 			</ul>
 		</div>
 	</div>

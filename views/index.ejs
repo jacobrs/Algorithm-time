@@ -6,25 +6,32 @@
 	<div class="list-group">
 		<% if(loggedIn == false) { %>
 		<a href="user/login" class="list-group-item">
-			<h4 class="list-group-item-heading">Login as a Regular</h4>
+			<h4 class="list-group-item-heading">
+			<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;&nbsp;Login as a Regular</h4>
 			<p class="list-group-item-text">Keep the points you earn and appear on the leaderboard!</p>
 		</a>
 		<a href="user/register" class="list-group-item">
-			<h4 class="list-group-item-heading">Register to Algorithm Time</h4>
+			<h4 class="list-group-item-heading">
+			<span class="glyphicon glyphicon-grain" aria-hidden="true"></span>&nbsp;&nbsp;Register to Algorithm Time</h4>
 			<p class="list-group-item-text">Register to compete against your peers!</p>
-		</a>
-		<a href="user/guest" class="list-group-item">
-			<h4 class="list-group-item-heading">Login as guest</h4>
-			<p class="list-group-item-text">Collect points during a session but this won't save your progress</p>
 		</a>
 		<% } %>
 		<a href="leaderboard" class="list-group-item">
-			<h4 class="list-group-item-heading">Leaderboard</h4>
+			<h4 class="list-group-item-heading">
+			<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>&nbsp;&nbsp;Leaderboard
+			<span class="label label-info stat"><%= usercount%> users registered</span></h4>
 			<p class="list-group-item-text">View the top problem solvers and how you rank.</p>
 		</a>
 		<% if(loggedIn != false) { %>
+		<a href="room/all" class="list-group-item">
+			<h4 class="list-group-item-heading">
+			<span class="glyphicon glyphicon-education" aria-hidden="true"></span>&nbsp;&nbsp;Rooms
+			<span class="label label-info stat"><%= roomcount %> rooms available</span></h4>
+			<p class="list-group-item-text">Explore rooms full of problems</p>
+		</a>
 		<a href="user/logout" class="list-group-item">
-			<h4 class="list-group-item-heading">Logout</h4>
+			<h4 class="list-group-item-heading">
+			<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;&nbsp;Logout</h4>
 			<p class="list-group-item-text">Secure your points by logging out.</p>
 		</a>
 		<% }%>

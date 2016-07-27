@@ -1,5 +1,6 @@
 module.exports = function(models) {
 	
+	var xss = require('xss');
 	var express = require('express');
 	var viewUtils = require(__base + '/libs/viewUtils');
 	var router = express.Router();
@@ -63,10 +64,10 @@ module.exports = function(models) {
 		err_msg = "";
 
 		// Set the data
-		user.nickname = req.body.nickname.toLowerCase();
-		user.fullname = req.body.fullname;
-		user.email = req.body.email.toLowerCase();
-		user.password = sha256(req.body.password);
+		user.nickname = xss(req.body.nickname.toLowerCase());
+		user.fullname = xss(req.body.fullname);
+		user.email = xss(req.body.email.toLowerCase());
+		user.password = xss(sha256(req.body.password));
 		user.score = 0;
 		user.date = new Date();
 		user.level = 2;
