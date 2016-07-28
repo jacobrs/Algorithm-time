@@ -28,6 +28,7 @@ utils.initializeSession = function(req, data, models, callback){
 	}
 }
 
+// THIS FUNCTION IS DEPRECATED (DO NOT USE)
 utils.populateSessionData = function(req, data){
 	if(typeof req.cookies.session != "undefined"){
 		data.loggedIn = true;
@@ -44,7 +45,7 @@ utils.load = function(res, page, data) {
 	data.level = utils.level;
 	data.loggedIn = (data.loggedIn == undefined || !data.loggedIn)?false:true;
 
-	if(page == "leaderboard" || page == "room/all"){
+	if(page == "leaderboard" || page == "room/all" || page == "submissions/index"){
 		data.months = ["January", "February", "March", "April", "May", "June", "July", "August", "Septembter", "October", "November", "December"];
 	}
 
