@@ -32,6 +32,51 @@ module.exports = function(models){
 		});
 	});
 
+	router.get('/submissions', function(req, res, next){
+		data = {};
+		viewUtils.initializeSession(req, data, models, function(data){
+			if(data.user == undefined || data.user.level != 0){
+				res.redirect('/');
+			}else{
+				models.user_prob_model.aggregate([
+				    {
+				      $lookup:
+				        {
+				          from: "users",
+				          localField: "user",
+				          foreignField: "nickname",
+				          as: "user_docs"
+				        }
+				    },
+				    {
+				      $lookup:
+				        {
+				          from: "probs",
+				          localField: "prob",
+				          foreignField: "id",
+				          as: "prob_docs"
+				        }
+				    },
+				    {
+				    	$match:
+				    	{
+				    		complete:false,
+				    	}
+				    },
+				    {
+				    	$sort:
+				    	{
+				    		date: 1,
+				    	}
+				    }
+					], function(error, rels){
+					data.rels = rels;
+					viewUtils.load(res, 'submissions/index', data);
+				});	
+			}
+		});
+	});
+
 	router.get('/error', function(req, res, next){
 		data = {error: {message: "Oups :(", stack: "There seems to be an error with this page."}};
 		data = viewUtils.populateSessionData(req, data);
