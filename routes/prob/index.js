@@ -3,6 +3,33 @@ module.exports = function(models) {
 	var express = require('express');
 	var viewUtils = require(__base + '/libs/viewUtils');
 	var router = express.Router();
+	var ObjectId = require('mongodb').ObjectID;
+
+	router.get('/review/:id(\\d+)/', function (req, res, next) {
+		models.prob_model.findOne({id: req.params.id}, function(err, prob){
+			data = {prob:prob};
+			viewUtils.initializeSession(req, data, models, function(data){
+				if(data.user == undefined){
+					res.redirect('/');
+				}else{
+					models.user_prob_model.count({user: new ObjectId(data.user._id), prob: prob.id}, function(err, count){
+						if(count < 1){
+							var user_prob = new models.user_prob_model;
+							user_prob.user = data.user.nickname;
+							user_prob.prob = prob.id;
+							user_prob.complete = false;
+							user_prob.date = new Date();
+							user_prob.save(function(err){
+								res.redirect('../'+prob.id);
+							});	
+						}else{
+							res.redirect('../'+prob.id);
+						}
+					});	
+				}
+			});
+		});
+	});
 
 	router.get('/create/:id(\\d+)/', function (req, res, next) {
 		models.room_model.findOne({room: req.params.id}, function(err, room){
@@ -19,12 +46,18 @@ module.exports = function(models) {
 
 	router.get('/:id(\\d+)/', function (req, res, next) {
 		models.prob_model.findOne({id: req.params.id}, function(err, prob){
-			data = {prob:prob};
+			data = {prob:prob, submitted:false, complete:false};
 			viewUtils.initializeSession(req, data, models, function(data){
 				if(data.user == undefined){
 					res.redirect('/');
 				}else{
-					viewUtils.load(res, 'prob/index', data);	
+					models.user_prob_model.find({user: data.user.nickname, prob: prob.id}, function(err, rels){
+						if(rels.length > 0){
+							data.submitted = true;
+							data.complete = rels[0].complete;
+						}
+						viewUtils.load(res, 'prob/index', data);	
+					});
 				}
 			});
 		});

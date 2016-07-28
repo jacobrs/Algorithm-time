@@ -17,8 +17,9 @@
 					  <ul class="dropdown-menu">
 					    <li><a href="<%=__base_url%>/user/profile">Profile</a></li>
 
-					    <% if(user.level == 0){ %>
+					    <% if(user.level == level.ADMIN){ %>
 					    	<li><a href="<%=__base_url%>/room/create">Create Room</a></li>
+					    	<li><a href="<%=__base_url%>/submissions">Submissions</a></li>
 					    <% } %>
 
 					    <li role="separator" class="divider"></li>
@@ -26,8 +27,8 @@
 					  </ul>
 					</div>
 					<li role="presentation" 
-					<% if(main_page.split("/").pop() == "all" && main_page.split("/")[main_page.split("/").length-2] == "room"){ %> class="active" <% } %>
-					><a href="<%=__base_url%>/room/all">
+					<% if(main_page.split("/").pop() == "all" && main_page.split("/")[main_page.split("/").length-2] == "room"){ %> class="active" <% } %>>
+					<a href="<%=__base_url%>/room/all">
 					<span class="glyphicon glyphicon-education" aria-hidden="true"></span>&nbsp;&nbsp;Rooms</a></li>
 				<% } %>	
 				<li role="presentation" 
