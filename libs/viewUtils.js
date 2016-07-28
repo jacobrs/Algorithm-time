@@ -2,6 +2,11 @@ var utils = {};
 
 var ObjectId = require('mongodb').ObjectID;
 
+// LEVELS
+utils.level = {};
+utils.level.ADMIN = 1;
+utils.level.USER = 2;
+
 utils.initializeSession = function(req, data, models, callback){
 	if(typeof req.cookies.session != "undefined"){
 		models.session_model.find({key: req.cookies.session.key}, function(err, sessions){
@@ -37,6 +42,7 @@ utils.load = function(res, page, data) {
 	data = typeof data !== 'undefined' ? data : {};
 	data.main_page = __base + '/views/' + page;
 	data.base_url = __base_url;
+	data.level = utils.level;
 	data.loggedIn = (data.loggedIn == undefined || !data.loggedIn)?false:true;
 
 	if(page == "leaderboard" || page == "room/all" || page == "submissions/index"){

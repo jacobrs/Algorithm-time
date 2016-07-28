@@ -6,44 +6,67 @@ module.exports = function(models) {
 
 	router.get('/create', function(req, res, next) {
 		var data = {};
-		viewUtils.initializeSession(req, data, models, function(data){
-			if(data.user.level == 0){
-				viewUtils.load(res, 'room/create', data);
-			}else{
-				res.redirect('all');
-			}
-		});
+
+		// Check if logged in
+		viewUtils.populateSessionData(req, data);
+		if(data.loggedIn) {
+
+			// Fetch session information
+			viewUtils.initializeSession(req, data, models, function(data){
+				
+				// Admin place only
+				if(data.user.level == viewUtils.level.ADMIN){
+					viewUtils.load(res, 'room/create', data);
+				}
+			});
+		}
+		res.redirect('/error');
 	});
 
 	router.post('/create', function(req, res, next){
 		var data = req.body;
-		viewUtils.initializeSession(req, data, models, function(data){
-			if(data.user.level == 0){
-				models.room_model.find({}, function(err, rooms){
-					
-					var room = new models.room_model;
-					room.room = (rooms.length == 0)?1:rooms[0].room + 1;
-					if(data.title == undefined || data.title.trim() == "" || data.description.trim() == "" || data.description == undefined){
-						data.error_msg = "Missing fields";
-						viewUtils.load(res, 'room/create', data);
-					}else{
-						room.title = data.title;
-						room.description = data.description;
-						room.date = new Date();
-						room.points = 0;
-						room.save(function(err){
-							if(err){
-								data.error_msg = "Error Saving Room";
-								viewUtils.load(res, 'room/create', data);
-							}else{
-								res.redirect('all');
-							}
-						});	
-					}
 
-				}).sort({room:-1}).limit(1);
-			}
-		});
+		// Check if logged in
+		viewUtils.populateSessionData(req, data);
+		if(data.loggedIn) {
+
+			// Fetch session information
+			viewUtils.initializeSession(req, data, models, function(data){
+				
+				// Admin place only
+				if(data.user.level == viewUtils.level.ADMIN){
+
+					// Get all rooms available
+					models.room_model.find({}, function(err, rooms){
+						var room = new models.room_model;
+						
+						// Set the room number
+						room.room = (rooms.length == 0)?1:rooms[0].room + 1;
+						
+						// Form validation
+						if(data.title == undefined || data.title.trim() == "" || data.description.trim() == "" || data.description == undefined){
+							data.error_msg = "Missing fields";
+							viewUtils.load(res, 'room/create', data);
+						}else{
+							room.title = data.title;
+							room.description = data.description;
+							room.date = new Date();
+							room.points = 0;
+							room.save(function(err){
+								if(err){
+									data.error_msg = "Error Saving Room";
+									viewUtils.load(res, 'room/create', data);
+								}else{
+									res.redirect('all');
+								}
+							});	
+						}
+
+					}).sort({room:-1}).limit(1);
+				}
+			});
+		}
+		res.redirect('/error');
 	});
 
 	router.get('/all', function(req, res, next) {
