@@ -33,7 +33,46 @@ module.exports = function(models) {
 	router.get('/', function(req, res, next) {
 		data = {};
 		data = viewUtils.populateSessionData(req, data);
-	  res.send('All users');
+	    res.send('All users');
+	});
+
+	router.get('/profile', function(req, res, next) {
+		data = {};
+		viewUtils.initializeSession(req, data, models, function(data){
+			if(data.loggedIn){
+				models.user_prob_model.aggregate([
+					{
+						$lookup:
+				        {
+				          from: "userprobs",
+				          localField: "id",
+				          foreignField: "prob",
+				          as: "userprob_docs"
+				        }
+				    },
+				    {
+				      $lookup:
+				        {
+				          from: "probs",
+				          localField: "prob",
+				          foreignField: "id",
+				          as: "prob_docs"
+				        }
+				    },
+				    {
+				    	$match:
+				    	{
+				    		complete:false,
+				    	}
+				    }
+				], function(err, problems){
+					data.user.problems = problems;
+					viewUtils.load(res, 'user/profile', data);
+				});
+			}else{
+				res.redirect('/');
+			}
+		});
 	});
 
 	router.get('/register', function(req, res, next) {
