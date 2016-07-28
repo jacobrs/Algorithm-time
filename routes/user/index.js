@@ -33,7 +33,7 @@ module.exports = function(models) {
 	router.get('/', function(req, res, next) {
 		data = {};
 		data = viewUtils.populateSessionData(req, data);
-	  res.send('All users');
+	  	res.redirect('all');
 	});
 
 	router.get('/register', function(req, res, next) {
