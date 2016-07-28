@@ -15,7 +15,7 @@
 					    <%= user.fullname %>&nbsp;&nbsp; <span class="caret"></span>
 					  </button>
 					  <ul class="dropdown-menu">
-					    <li><a href="#">Profile</a></li>
+					    <li><a href="<%=__base_url%>/user/profile">Profile</a></li>
 
 					    <% if(user.level == 0){ %>
 					    	<li><a href="<%=__base_url%>/room/create">Create Room</a></li>
