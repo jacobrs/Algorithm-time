@@ -17,7 +17,7 @@
 					  <ul class="dropdown-menu">
 					    <li><a href="#">Profile</a></li>
 
-					    <% if(user.level == 0){ %>
+					    <% if(user.level == level.ADMIN){ %>
 					    	<li><a href="<%=__base_url%>/room/create">Create Room</a></li>
 					    <% } %>
 

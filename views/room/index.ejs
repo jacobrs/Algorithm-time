@@ -15,7 +15,7 @@
 	  		<span class="right"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;&nbsp;<%= probs[i].score%></span></a>
 	  	<% }%>
 
-	    <% if(user.level == 0) { %>
+	    <% if(user.level == level.ADMIN) { %>
 	    <a href="<%= __base_url %>/prob/create/<%= room.room %>" class="list-group-item">
 	    	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;&nbsp;Add Problem
 	    </a>

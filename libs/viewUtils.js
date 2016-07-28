@@ -41,6 +41,7 @@ utils.load = function(res, page, data) {
 	data = typeof data !== 'undefined' ? data : {};
 	data.main_page = __base + '/views/' + page;
 	data.base_url = __base_url;
+	data.level = utils.level;
 	data.loggedIn = (data.loggedIn == undefined || !data.loggedIn)?false:true;
 
 	if(page == "leaderboard" || page == "room/all"){
