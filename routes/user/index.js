@@ -42,23 +42,31 @@ module.exports = function(models) {
  			if(data.loggedIn){
  				models.user_prob_model.aggregate([
  					{
- 						$lookup:
- 				        {
+ 						$lookup:{
  				          from: "probs",
  				          localField: "prob",
  				          foreignField: "id",
  				          as: "prob_docs"
  				        }
  				    },
- 				    {
- 				    	$match:
- 				    	{
- 				    		complete: true,
- 				    	}
- 				    }
+			        {
+			        	$match:
+			        	{
+			        		user: data.user.nickname
+			        	}
+			        }
  				], function(err, problems){
  					data.user.problems = problems;
- 					console.log(problems);
+ 					data.user.score = 0;
+
+ 					console.log(data.user.problems);
+
+ 					for(var i = 0; i < data.user.problems.length; i++){
+ 						if(data.user.problems[i].complete){
+ 							data.user.score += data.user.problems[i].score;
+ 						}
+ 					}
+
  					viewUtils.load(res, 'user/profile', data);
  				});
  			}else{
