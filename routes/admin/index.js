@@ -6,7 +6,11 @@ module.exports = function(models){
 
 	router.get('/', function(req, res, next) {
 		viewUtils.initializeSession(req, {}, models, function(data){
-			viewUtils.load(res, 'admin/index', data);
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
+				viewUtils.load(res, 'admin/index', data);
+			} else {
+				res.redirect('/error');
+			}
 		});
 	});
 
@@ -21,6 +25,26 @@ module.exports = function(models){
 				res.redirect('/error');	
 			}
 		});
+	});
+
+	router.get('/sessions', function(req, res, next) {
+		viewUtils.initializeSession(req, {}, models, function(data){
+			models.session_model.find({}, function(error, sessions){
+				models.user_model.find({}, function(err, users){
+					for(var i=0; i < sessions.length; i++) {
+						sessions[i].nickname = "Not available";
+						for(var j=0; j < users.length; j++) {
+							if(sessions[i].id == users[j]._id) {
+								sessions[i].nickname = users[i].nickname;
+								break;
+							}
+						}
+					}
+					data.sessions = sessions;
+					viewUtils.load(res, 'admin/sessions', data);
+				});
+			});
+		});	
 	});
 
 	return router;
