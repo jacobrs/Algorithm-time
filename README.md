@@ -4,6 +4,8 @@
 
 `npm install`
 
+## Requirements
+ - **mongo --version** `MongoDB shell version: 3.2.8`
 
 ## Scripts
 
