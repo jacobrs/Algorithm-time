@@ -66,8 +66,9 @@ module.exports = function(models) {
 					}).sort({room:-1}).limit(1);
 				}
 			});
+		}else{
+			res.redirect('/error');
 		}
-		res.redirect('/error');
 	});
 
 	router.get('/all', function(req, res, next) {

@@ -44,15 +44,6 @@ module.exports = function(models) {
  					{
  						$lookup:
  				        {
- 				          from: "userprobs",
- 				          localField: "id",
- 				          foreignField: "prob",
- 				          as: "userprob_docs"
- 				        }
- 				    },
- 				    {
- 				      $lookup:
- 				        {
  				          from: "probs",
  				          localField: "prob",
  				          foreignField: "id",
