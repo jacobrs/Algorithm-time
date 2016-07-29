@@ -79,8 +79,9 @@ module.exports = function(models){
 
 	router.get('/error', function(req, res, next){
 		data = {error: {message: "Oups :(", stack: "There seems to be an error with this page."}};
-		data = viewUtils.populateSessionData(req, data);
-		viewUtils.load(res, 'error', data);
+		viewUtils.initializeSession(req, data, models, function(data){
+			viewUtils.load(res, 'error', data);
+		});
 	});
 
 	return router;
