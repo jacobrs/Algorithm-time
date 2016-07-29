@@ -44,11 +44,7 @@ utils.load = function(res, page, data) {
 	data.base_url = __base_url;
 	data.level = utils.level;
 	data.loggedIn = (data.loggedIn == undefined || !data.loggedIn)?false:true;
-
-	if(page == "leaderboard" || page == "room/all" || page == "submissions/index"){
-		data.months = ["January", "February", "March", "April", "May", "June", "July", "August", "Septembter", "October", "November", "December"];
-	}
-
+	data.months = ["January", "February", "March", "April", "May", "June", "July", "August", "Septembter", "October", "November", "December"];
 	res.render('template/user/template.ejs', data);
 }
 
