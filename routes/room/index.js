@@ -19,8 +19,9 @@ module.exports = function(models) {
 					viewUtils.load(res, 'room/create', data);
 				}
 			});
+		}else{
+			res.redirect('/error');	
 		}
-		res.redirect('/error');
 	});
 
 	router.post('/create', function(req, res, next){
