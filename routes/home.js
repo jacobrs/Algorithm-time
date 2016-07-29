@@ -24,11 +24,42 @@ module.exports = function(models){
 			if(typeof data.user != "undefined"){
 				currUser = data.user.nickname;
 			}
-			models.user_model.find({}, function(error, users){
+			models.user_model.aggregate([
+			    {
+			        $lookup:{
+			              from: "userprobs",
+			              localField: "nickname",
+			              foreignField: "user",
+			              as: "solved"
+			            }
+			    },
+			    {
+			        $project:{
+			            "_id":1,
+			            "nickname":1,
+			            "fullname":1,
+			            "lastLogin":1,
+			            "solved": {
+			               $filter: {
+			                "input": "$solved",
+			                "as": "solved",
+			                "cond": { "$eq": [ "$$solved.complete", true ] }
+			              }
+			            }
+			        }
+			    }
+			], function(error, users){
 				data.users = users;
 				data.currentUser = currUser;
+				for(var i = 0; i < users.length; i++){
+					users[i].score = 0;
+					for(var j = 0; j < users[i].solved.length; j++){
+						users[i].score += users[i].solved[j].score;
+					}
+				}
+				data.users.sort(function(a, b){return b.score-a.score});
 				viewUtils.load(res, 'leaderboard', data);
-			}).sort( { score: -1 } );
+			});
 		});
 	});
 

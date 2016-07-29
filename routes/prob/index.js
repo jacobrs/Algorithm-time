@@ -17,6 +17,7 @@ module.exports = function(models) {
 							var user_prob = new models.user_prob_model;
 							user_prob.user = data.user.nickname;
 							user_prob.prob = prob.id;
+							user_prob.score = prob.score;
 							user_prob.complete = false;
 							user_prob.date = new Date();
 							user_prob.save(function(err){
@@ -28,6 +29,34 @@ module.exports = function(models) {
 					});	
 				}
 			});
+		});
+	});
+
+	router.get('/complete/:id/', function (req, res, next) {
+		models.user_prob_model.findOne({_id: new ObjectId(req.params.id)}, function(error, rel){
+			data = {rel:rel};
+			viewUtils.initializeSession(req, data, models, function(data){
+				if(data.user == undefined || data.user.level != viewUtils.level.ADMIN){
+					res.redirect('/');
+				}else{
+					rel.complete = true;
+					rel.save(function(err){
+						res.redirect('/submissions');
+					});	
+				}
+			});
+		});
+	});
+
+	router.get('/incomplete/:id/', function (req, res, next) {
+		viewUtils.initializeSession(req, data, models, function(data){
+			if(data.user == undefined || data.user.level == viewUtils.level.ADMIN){
+				models.user_prob_model.remove({_id: new ObjectId(req.params.id)}, function(error, rel){
+					res.redirect('/submissions');
+				});
+			}else{
+				res.redirect('/');
+			}
 		});
 	});
 

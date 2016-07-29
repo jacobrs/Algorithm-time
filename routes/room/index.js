@@ -19,8 +19,9 @@ module.exports = function(models) {
 					viewUtils.load(res, 'room/create', data);
 				}
 			});
+		}else{
+			res.redirect('/error');	
 		}
-		res.redirect('/error');
 	});
 
 	router.post('/create', function(req, res, next){
@@ -65,8 +66,9 @@ module.exports = function(models) {
 					}).sort({room:-1}).limit(1);
 				}
 			});
+		}else{
+			res.redirect('/error');
 		}
-		res.redirect('/error');
 	});
 
 	router.get('/all', function(req, res, next) {
@@ -87,10 +89,16 @@ module.exports = function(models) {
 	  models.room_model.findOne({room: room}, function(err, roomObj){
 	  	data = {room:roomObj}
 	  	viewUtils.initializeSession(req, data, models, function(data){
-	  		models.prob_model.find({room: roomObj.room}, function(err, probs){
-		  		data.probs = probs;
-		  		viewUtils.load(res, 'room/index', data);
-		  	}).sort({score:1});
+	  		models.user_prob_model.find({user: data.user.nickname, complete:true}, function(err, rels){
+	  			data.solved = [];
+	  			for(var i = 0; i < rels.length; i ++){
+	  				data.solved.push(rels[i].prob);
+	  			}
+		  		models.prob_model.find({room: roomObj.room}, function(err, probs){
+			  		data.probs = probs;
+			  		viewUtils.load(res, 'room/index', data);
+			  	}).sort({score:1});	
+	  		});
 	  	});
 	  });
 	});

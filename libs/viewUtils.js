@@ -4,7 +4,8 @@ var ObjectId = require('mongodb').ObjectID;
 
 // LEVELS
 utils.level = {};
-utils.level.ADMIN = 1;
+utils.level.ADMIN = 0;
+utils.level.GUEST = 1;
 utils.level.USER = 2;
 
 utils.initializeSession = function(req, data, models, callback){
