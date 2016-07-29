@@ -1,0 +1,21 @@
+<div class="col-md-offset-2 col-md-8">
+	<div class="main-title text-center">
+		<h3>All sessions</h3>
+	</div>
+	<table class="table table-striped">
+		<tr>
+			<th>#</th>
+			<th>Session key</th>
+			<th>Nickname</th>
+			<th></th>
+		</tr>
+		<% for(var i=0; i<sessions.length; i++) {%>
+		<tr>
+				<td><%= i+1 %></td>
+				<td><%= sessions[i].key%></td>
+				<td><%= sessions[i].nickname%></td>
+				<td style="width:1%;"><a href="<%= base_url%>/" class="btn btn-danger">Delete</td>
+		</tr>
+		<% } %>
+	</table>
+</div>

@@ -1,0 +1,35 @@
+<div class="col-md-offset-2 col-md-8">
+	<div class="main-title text-center">
+		<h3>All users</h3>
+	</div>
+	<table class="table table-striped">
+		<tr>
+			<th>#</th>
+			<th>Nickname</th>
+			<th>Full Name</th>
+			<th>Last Login</th>
+			<th>Points</th>
+			<th>Email</th>
+			<th>Level</th>
+			<th></th>
+			<th></th>
+		</tr>
+		<% for(var i=0; i<users.length; i++) {%>
+		<tr>
+				<td><%= i+1 %></td>
+				<td><%= users[i].nickname %></td>
+				<td><%= users[i].fullname %></td>
+				<% if (users[i].lastLogin == null) { %>
+					<td>Never</td>
+				<% } else { %>
+				<td><%= months[users[i].lastLogin.getMonth()] + " " +users[i].lastLogin.getDate() + ", " + users[i].lastLogin.getFullYear()%></td>
+				<% } %>
+				<td><span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;<%= users[i].score %></td>
+				<td><%= users[i].email%></td>
+				<td><%= users[i].level == level.ADMIN ? "Admin" : "User"%></td>
+				<td style="width:1%;"><a href="<%= base_url%>/user/edit/<%=users[i].nickname%>" class="btn btn-info">Edit</td>
+				<td style="width:1%;"><a href="<%= base_url%>/user/delete/<%=users[i].nickname%>" class="btn btn-danger">Delete</td>
+		</tr>
+		<% } %>
+	</table>
+</div>

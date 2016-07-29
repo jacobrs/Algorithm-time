@@ -49,6 +49,7 @@ var user = require('./routes/user/index')(models);
 var room = require('./routes/room/index')(models);
 var prob = require('./routes/prob/index')(models);
 var install = require('./routes/install/index')(models);
+var admin = require('./routes/admin/index')(models);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -67,6 +68,7 @@ app.use('/user', user);
 app.use('/room', room);
 app.use('/prob', prob);
 app.use('/install', install);
+app.use('/admin', admin);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
