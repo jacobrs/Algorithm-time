@@ -48,6 +48,18 @@ module.exports = function(models) {
 		});
 	});
 
+	router.get('/incomplete/:id/', function (req, res, next) {
+		viewUtils.initializeSession(req, data, models, function(data){
+			if(data.user == undefined || data.user.level == viewUtils.level.ADMIN){
+				models.user_prob_model.remove({_id: new ObjectId(req.params.id)}, function(error, rel){
+					res.redirect('/submissions');
+				});
+			}else{
+				res.redirect('/');
+			}
+		});
+	});
+
 	router.get('/create/:id(\\d+)/', function (req, res, next) {
 		models.room_model.findOne({room: req.params.id}, function(err, room){
 			data = {room:room};

@@ -89,10 +89,16 @@ module.exports = function(models) {
 	  models.room_model.findOne({room: room}, function(err, roomObj){
 	  	data = {room:roomObj}
 	  	viewUtils.initializeSession(req, data, models, function(data){
-	  		models.prob_model.find({room: roomObj.room}, function(err, probs){
-		  		data.probs = probs;
-		  		viewUtils.load(res, 'room/index', data);
-		  	}).sort({score:1});
+	  		models.user_prob_model.find({user: data.user.nickname}, function(err, rels){
+	  			data.solved = [];
+	  			for(var i = 0; i < rels.length; i ++){
+	  				data.solved.push(rels[i].prob);
+	  			}
+		  		models.prob_model.find({room: roomObj.room}, function(err, probs){
+			  		data.probs = probs;
+			  		viewUtils.load(res, 'room/index', data);
+			  	}).sort({score:1});	
+	  		});
 	  	});
 	  });
 	});

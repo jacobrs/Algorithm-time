@@ -11,7 +11,8 @@
 	  <div class="panel-heading" style="border-top:1px solid rgb(221, 221, 221); border-radius:0px;">Problem List</div>
 	  <div class="list-group">
 	  	<% for(var i=0; i<probs.length; i++) {%>
-	  		<a href="<%= __base_url %>/prob/<%= probs[i].id %>" class="list-group-item"><%=probs[i].title%>
+	  		<a href="<%= __base_url %>/prob/<%= probs[i].id %>" class="list-group-item" 
+	  		<% if(solved.indexOf(probs[i].id) != -1 ){%>style="background-color:#dff0d8"<% } %>><%=probs[i].title%>
 	  		<span class="right"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;&nbsp;<%= probs[i].score%></span></a>
 	  	<% }%>
 
