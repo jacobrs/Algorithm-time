@@ -53,11 +53,12 @@ module.exports = function(models) {
  				    {
  				    	$match:
  				    	{
- 				    		complete:false,
+ 				    		complete: true,
  				    	}
  				    }
  				], function(err, problems){
  					data.user.problems = problems;
+ 					console.log(problems);
  					viewUtils.load(res, 'user/profile', data);
  				});
  			}else{
