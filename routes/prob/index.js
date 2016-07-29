@@ -31,6 +31,25 @@ module.exports = function(models) {
 		});
 	});
 
+	router.get('/complete/:id/', function (req, res, next) {
+		models.user_prob_model.findOne({_id: new ObjectId(req.params.id)}, function(err, rel){
+			data = {rel:rel};
+			viewUtils.initializeSession(req, data, models, function(data){
+				if(data.user == undefined || data.user.level != viewUtils.level.ADMIN){
+					res.redirect('/');
+				}else{
+					rel.complete = true;
+					rel.save(function(err){
+						models.user_model.findOne({nickname: rel.user}, function(err, user){
+							//user.score += user.score += rel.
+						});
+						res.redirect('/submissions');
+					});	
+				}
+			});
+		});
+	});
+
 	router.get('/create/:id(\\d+)/', function (req, res, next) {
 		models.room_model.findOne({room: req.params.id}, function(err, room){
 			data = {room:room};
