@@ -2,7 +2,7 @@
 
 ## Docker image
 ```
-docker pull amirbawab/algorithm-time
+docker run -p 3000:3000 --name algorithm-time -dt amirbawab/algorithm-time:latest
 ```
 
 ## Install
