@@ -1,0 +1,27 @@
+<div class="col-md-offset-2 col-md-8">
+	<div class="main-title text-center">
+		<h3>All users</h3>
+	</div>
+	<table class="table table-striped">
+		<tr>
+			<th>#</th>
+			<th>Title</th>
+			<th>Date</th>
+			<th>Points</th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+		<% for(var i=0; i<probs.length; i++) {%>
+		<tr>
+			<td><%= probs[i].id %></td>
+		  	<td><%= probs[i].title%></td>
+		  	<td><%= months[probs[i].date.getMonth()] + " " +probs[i].date.getDate() + ", " + probs[i].date.getFullYear()%></td>
+		  	<td><span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;<%= probs[i].score %></td>
+		  	<td style="width:1%;"><a href="<%= base_url%>/room/<%= probs[i].room%>" class="label label-success">View room</a></td>
+			<td style="width:1%;"><a href="" class="label label-info">Edit</a></td>
+			<td style="width:1%;"><a href="" class="label label-danger">Delete</a></td>
+		</tr>
+		<% } %>
+	</table>
+</div>

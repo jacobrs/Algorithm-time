@@ -56,7 +56,15 @@ module.exports = function(models){
 				viewUtils.load(res, 'admin/rooms', data);
 			});
 		});	
-	});;
+	});
 
+	router.get('/probs', function(req, res, next){
+		admin(req, res, function(data){
+			models.prob_model.find({}, function(error, probs){
+				data.probs = probs;
+				viewUtils.load(res, 'admin/probs', data);
+			});
+		});
+	});
 	return router;
 }
