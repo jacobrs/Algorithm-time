@@ -1,5 +1,10 @@
 # Algorithm time [![Build Status](https://travis-ci.org/amirbawab/Algorithm-time.svg?branch=master)](https://travis-ci.org/amirbawab/Algorithm-time)
 
+## Docker image
+```
+docker pull amirbawab/algorithm-time
+```
+
 ## Install
 
 `npm install`
