@@ -51,7 +51,10 @@ module.exports = function(models){
 
 	router.get('/rooms', function(req, res, next){
 		admin(req, res, function(data){
-			
+			models.room_model.find({}, function(error, rooms){
+				data.rooms = rooms;
+				viewUtils.load(res, 'admin/rooms', data);
+			});
 		});	
 	});;
 
