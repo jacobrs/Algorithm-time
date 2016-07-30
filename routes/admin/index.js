@@ -4,31 +4,33 @@ module.exports = function(models){
 	var viewUtils = require(__base + '/libs/viewUtils');
 	var router = express.Router();
 
-	router.get('/', function(req, res, next) {
+	function admin(req, res, callback) {
 		viewUtils.initializeSession(req, {}, models, function(data){
 			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
-				viewUtils.load(res, 'admin/index', data);
+				callback(data);
 			} else {
 				res.redirect('/error');
 			}
 		});
+	}
+
+	router.get('/', function(req, res, next) {
+		admin(req, res, function(data){
+			viewUtils.load(res, 'admin/index', data);
+		});
 	});
 
 	router.get('/users', function(req, res, next) {
-		viewUtils.initializeSession(req, {}, models, function(data){
-			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
-				models.user_model.find({}, function(error, users){
-					data.users = users;
-					viewUtils.load(res, 'admin/users', data);
-				});
-			} else {
-				res.redirect('/error');	
-			}
+		admin(req, res, function(data){
+			models.user_model.find({}, function(error, users){
+				data.users = users;
+				viewUtils.load(res, 'admin/users', data);
+			});
 		});
 	});
 
 	router.get('/sessions', function(req, res, next) {
-		viewUtils.initializeSession(req, {}, models, function(data){
+		admin(req, res, function(data){
 			models.session_model.find({}, function(error, sessions){
 				models.user_model.find({}, function(err, users){
 					for(var i=0; i < sessions.length; i++) {
@@ -44,8 +46,14 @@ module.exports = function(models){
 					viewUtils.load(res, 'admin/sessions', data);
 				});
 			});
-		});	
+		});
 	});
+
+	router.get('/rooms', function(req, res, next){
+		admin(req, res, function(data){
+			
+		});	
+	});;
 
 	return router;
 }
