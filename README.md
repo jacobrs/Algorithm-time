@@ -1,6 +1,6 @@
 # Algorithm time [![Build Status](https://travis-ci.org/amirbawab/Algorithm-time.svg?branch=master)](https://travis-ci.org/amirbawab/Algorithm-time)
 
-## Docker image
+## Docker container
 ```
 docker run -p 3000:3000 --name algorithm-time -dt amirbawab/algorithm-time:latest
 ```
