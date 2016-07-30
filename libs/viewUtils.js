@@ -29,16 +29,6 @@ utils.initializeSession = function(req, data, models, callback){
 	}
 }
 
-// THIS FUNCTION IS DEPRECATED (DO NOT USE)
-utils.populateSessionData = function(req, data){
-	if(typeof req.cookies.session != "undefined"){
-		data.loggedIn = true;
-	}else{
-		data.loggedIn = false;
-	}
-	return data;
-}
-
 utils.load = function(res, page, data) {
 	data = typeof data !== 'undefined' ? data : {};
 	data.main_page = __base + '/views/' + page;

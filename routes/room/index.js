@@ -8,35 +8,21 @@ module.exports = function(models) {
 		var data = {};
 
 		// Check if logged in
-		viewUtils.populateSessionData(req, data);
-		if(data.loggedIn) {
-
-			// Fetch session information
-			viewUtils.initializeSession(req, data, models, function(data){
-				
-				// Admin place only
-				if(data.user.level == viewUtils.level.ADMIN){
-					viewUtils.load(res, 'room/create', data);
-				}
-			});
-		}else{
-			res.redirect('/error');	
-		}
+		viewUtils.initializeSession(req, data, models, function(data){
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
+				viewUtils.load(res, 'room/create', data);
+			}else{
+				res.redirect('/error');	
+			}
+		});
 	});
 
 	router.post('/create', function(req, res, next){
 		var data = req.body;
 
-		// Check if logged in
-		viewUtils.populateSessionData(req, data);
-		if(data.loggedIn) {
-
-			// Fetch session information
-			viewUtils.initializeSession(req, data, models, function(data){
+		viewUtils.initializeSession(req, data, models, function(data){
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
 				
-				// Admin place only
-				if(data.user.level == viewUtils.level.ADMIN){
-
 					// Get all rooms available
 					models.room_model.find({}, function(err, rooms){
 						var room = new models.room_model;
@@ -64,11 +50,10 @@ module.exports = function(models) {
 						}
 
 					}).sort({room:-1}).limit(1);
-				}
-			});
-		}else{
-			res.redirect('/error');
-		}
+			}else{
+				res.redirect('/error');
+			}
+		});
 	});
 
 	router.get('/all', function(req, res, next) {

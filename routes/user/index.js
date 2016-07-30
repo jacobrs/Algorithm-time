@@ -30,12 +30,6 @@ module.exports = function(models) {
 		});
 	}
 
-	router.get('/', function(req, res, next) {
-		data = {};
-		data = viewUtils.populateSessionData(req, data);
-	  	res.redirect('all');
-	});
-
 	router.get('/profile', function(req, res, next) {
  		data = {};
  		viewUtils.initializeSession(req, data, models, function(data){
@@ -76,99 +70,110 @@ module.exports = function(models) {
   	});
 
 	router.get('/register', function(req, res, next) {
-		data = {};
-		user = {};
-		user.nickname = "";
-		user.fullname = "";
-		user.email = "";
-		data.user = user;
-		data = viewUtils.populateSessionData(req, data);
-		viewUtils.load(res, 'user/register');
-	});
-
-	router.get('/error', function(req, res, next){
-		data = {error: {message: "Oups :(", stack: "There seems to be an error with this page."}};
-		data = viewUtils.populateSessionData(req, data);
-		viewUtils.load(res, 'error', data);
-	});
-
-	router.get('/guest', function(req, res, next){
-		res.redirect('/error');
+ 		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn) {
+				res.redirect('profile');
+			} else {
+				data.user = {
+					nickname:"",
+					email:"",
+					fullname:""
+				};
+				viewUtils.load(res, 'user/register', data);
+			}
+		});
 	});
 
 	router.post('/register', function(req, res, next) {
+ 		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn) {
+				res.redirect('profile');
+			} else {
+				// Create a new user
+				var user = new models.user_model;
+				err_msg = "";
 
-		// Create a new user
-		var user = new models.user_model;
-		err_msg = "";
+				// Set the data
+				user.nickname = xss(req.body.nickname.toLowerCase());
+				user.fullname = xss(req.body.fullname);
+				user.email = xss(req.body.email.toLowerCase());
+				user.password = xss(sha256(req.body.password));
+				user.score = 0;
+				user.date = new Date();
+				user.level = 2;
+				user.lastLogin = null;
 
-		// Set the data
-		user.nickname = xss(req.body.nickname.toLowerCase());
-		user.fullname = xss(req.body.fullname);
-		user.email = xss(req.body.email.toLowerCase());
-		user.password = xss(sha256(req.body.password));
-		user.score = 0;
-		user.date = new Date();
-		user.level = 2;
-		user.lastLogin = null;
+				// Logging
+				console.log("Registration form submitted: " + user.nickname);
 
-		// Logging
-		console.log("Registration form submitted: " + user.nickname);
+				// If no nickname selected
+				if(user.nickname !== undefined && user.nickname.trim() != '') {
 
-		// If no nickname selected
-		if(user.nickname !== undefined && user.nickname.trim() != '') {
+					// One word only
+					if(user.nickname.split(' ').length == 1) {
 
-			// One word only
-			if(user.nickname.split(' ').length == 1) {
-
-				// Check if it's unique
-				models.user_model.find({ $or: [{nickname: user.nickname}, {email: user.email}]}, function(err, users){
-					
-					// Already exists
-					if(users.length > 0) {
-						var message = "This nickname already exists, please type another one";
-						if(users[0].email == user.email){
-							message = "This email already exists, please type another one";
-						}
-						viewUtils.load(res, 'user/register', {error_msg: message, user: user});
-					} else {
-
-						// Save new user
-						user.save(function(err) {
-							if(err){
-								viewUtils.load(res, 'user/register', {error_msg: "Couldn't connect to DB. Try again."});
-								console.log("Coudn't save user to DB: " + err);
+						// Check if it's unique
+						models.user_model.find({ $or: [{nickname: user.nickname}, {email: user.email}]}, function(err, users){
+							
+							// Already exists
+							if(users.length > 0) {
+								var message = "This nickname already exists, please type another one";
+								if(users[0].email == user.email){
+									message = "This email already exists, please type another one";
+								}
+								viewUtils.load(res, 'user/register', {error_msg: message, user: user});
 							} else {
-								viewUtils.load(res, 'user/login', {success_msg: "Successfully registered, please login."});
+
+								// Save new user
+								user.save(function(err) {
+									if(err){
+										viewUtils.load(res, 'user/register', {error_msg: "Couldn't connect to DB. Try again."});
+										console.log("Coudn't save user to DB: " + err);
+									} else {
+										viewUtils.load(res, 'user/login', {success_msg: "Successfully registered, please login."});
+									}
+								});
 							}
 						});
-					}
-				});
 
-			} else {
-				viewUtils.load(res, 'user/register', {error_msg: "Nickname should not contain spaces"});
+					} else {
+						viewUtils.load(res, 'user/register', {error_msg: "Nickname should not contain spaces"});
+					}
+					
+				} else {
+					viewUtils.load(res, 'user/register', {error_msg: "Nickname is required"});
+				}
 			}
-			
-		} else {
-			viewUtils.load(res, 'user/register', {error_msg: "Nickname is required"});
-		}
+		});
 	});
 
 	router.get('/login', function(req, res, next) {
-		viewUtils.load(res, 'user/login');
+ 		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn) {
+				res.redirect('profile');
+			} else {
+				viewUtils.load(res, 'user/login', data);
+			}
+		});
 	});
 
 	router.post('/login', function(req, res, next) {
-		models.user_model.find({nickname: req.body.nickname, password: sha256(req.body.password)}, function(err, users){
-			// not valid credentials
-			if(users.length < 1 || users.length > 1){
-				viewUtils.load(res, 'user/login', {error_msg: "Invalid Login"});
-			}else{
-				var user = users[0];
-				var session = new models.session_model;
-				var key = generateRandomKey(120);
+ 		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn) {
+				res.redirect('profile');
+			} else {
+				models.user_model.find({nickname: req.body.nickname, password: sha256(req.body.password)}, function(err, users){
+					// not valid credentials
+					if(users.length < 1 || users.length > 1){
+						viewUtils.load(res, 'user/login', {error_msg: "Invalid Login"});
+					}else{
+						var user = users[0];
+						var session = new models.session_model;
+						var key = generateRandomKey(120);
 
-				getAKeyAndRedirect(session, key, user, res);
+						getAKeyAndRedirect(session, key, user, res);
+					}
+				});
 			}
 		});
 	});
