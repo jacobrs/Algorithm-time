@@ -27,8 +27,8 @@
 				<td><span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;<%= users[i].score %></td>
 				<td><%= users[i].email%></td>
 				<td><%= users[i].level == level.ADMIN ? "Admin" : "User"%></td>
-				<td style="width:1%;"><a href="<%= base_url%>/user/edit/<%=users[i].nickname%>" class="btn btn-info">Edit</td>
-				<td style="width:1%;"><a href="<%= base_url%>/user/delete/<%=users[i].nickname%>" class="btn btn-danger">Delete</td>
+				<td style="width:1%;"><a href="<%= base_url%>/user/edit/<%=users[i].nickname%>" class="label label-info">Edit</td>
+				<td style="width:1%;"><a href="<%= base_url%>/user/delete/<%=users[i].nickname%>" class="label label-danger">Delete</td>
 		</tr>
 		<% } %>
 	</table>
