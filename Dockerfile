@@ -8,6 +8,6 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN npm install
 EXPOSE 3000
-RUN echo "/etc/init.d/mongod start; npm start" > start.sh
+RUN echo "/etc/init.d/mongod start; echo 'Speeing 5 seconds to start mongodb server...';sleep 5; npm start" > start.sh
 RUN chmod a+x "start.sh"
 CMD [ "/bin/bash", "start.sh" ]
