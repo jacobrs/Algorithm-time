@@ -1,7 +1,7 @@
 <div class="col-md-offset-2 col-md-8">
 	<div class="user-profile">
 		<div class="main-title-profile text-center">
-			<h2><b><%=profile.fullname%></b> <span class="small"><i>(<%=profile.nickname%>)</i></span></h2>
+			<h2><b><%=profile.fullname%></b> <span class="small"><i>(<%=profile.nickname%>)</i></span> <% if(user.level == level.ADMIN || user.nickname == profile.nickname){%><a href="<%=base_url%>/user/edit/<%=profile.nickname%>" style="font-size:12px;" class="label label-info">Edit profile</a><%}%></h2>
 			<h3>Total Points</h3>
 			<h4><span class="glyphicon glyphicon-star" aria-hidden="true"></span><%= profile.score %></h4>
 		</div>
