@@ -13,6 +13,7 @@
 			<th>Level</th>
 			<th></th>
 			<th></th>
+			<th></th>
 		</tr>
 		<% for(var i=0; i<users.length; i++) {%>
 		<tr>
@@ -27,6 +28,7 @@
 				<td><span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;<%= users[i].score %></td>
 				<td><%= users[i].email%></td>
 				<td><%= users[i].level == level.ADMIN ? "Admin" : "User"%></td>
+				<td style="width:1%;"><a href="<%= base_url%>/user/profile/<%=users[i].nickname%>" class="label label-success">View</td>
 				<td style="width:1%;"><a href="<%= base_url%>/user/edit/<%=users[i].nickname%>" class="label label-info">Edit</td>
 				<td style="width:1%;"><a href="<%= base_url%>/user/delete/<%=users[i].nickname%>" class="label label-danger">Delete</td>
 		</tr>

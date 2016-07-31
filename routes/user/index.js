@@ -29,42 +29,65 @@ module.exports = function(models) {
 			}
 		});
 	}
-
+				
 	router.get('/profile', function(req, res, next) {
+		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn) {
+				console.log(data);
+				res.redirect('profile/' + data.user.nickname);
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
+	router.get('/profile/:nickname', function(req, res, next) {
  		data = {};
  		viewUtils.initializeSession(req, data, models, function(data){
  			if(data.loggedIn){
- 				models.user_prob_model.aggregate([
- 					{
- 						$lookup:{
- 				          from: "probs",
- 				          localField: "prob",
- 				          foreignField: "id",
- 				          as: "prob_docs"
- 				        }
- 				    },
-			        {
-			        	$match:
-			        	{
-			        		user: data.user.nickname
-			        	}
-			        }
- 				], function(err, problems){
- 					data.user.problems = problems;
- 					data.user.score = 0;
+				models.user_model.findOne({nickname: req.params.nickname}, function(err, user) {
 
- 					console.log(data.user.problems);
+					if(err) {
+						res.redirect('/error');
+					} else {
+						if(user != null) {
+							data.profile = user;
+							models.user_prob_model.aggregate([
+								{
+									$lookup:{
+									  from: "probs",
+									  localField: "prob",
+									  foreignField: "id",
+									  as: "prob_docs"
+									}
+								},
+								{
+									$match:
+									{
+										user: data.profile.nickname
+									}
+								}
+							], function(err, problems){
+								data.profile.problems = problems;
+								data.profile.score = 0;
 
- 					for(var i = 0; i < data.user.problems.length; i++){
- 						if(data.user.problems[i].complete){
- 							data.user.score += data.user.problems[i].score;
- 						}
- 					}
+								console.log(data.profile.problems);
 
- 					viewUtils.load(res, 'user/profile', data);
- 				});
+								for(var i = 0; i < data.profile.problems.length; i++){
+									if(data.profile.problems[i].complete){
+										data.profile.score += data.profile.problems[i].score;
+									}
+								}
+
+								viewUtils.load(res, 'user/profile', data);
+							});
+						} else {
+							res.redirect('/error');
+						}
+					}
+				});
  			}else{
- 				res.redirect('/');
+ 				res.redirect('/error');
  			}
  		});
   	});
