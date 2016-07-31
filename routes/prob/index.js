@@ -248,5 +248,47 @@ module.exports = function(models) {
 		});
 	});
 
+	router.get('/delete/:id', function(req, res, next) {
+		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
+				models.prob_model.findOne({id: req.params.id}, function(err, prob){
+					if(err) {
+						res.send('500');
+					} else {
+						if(prob != null) {
+
+							models.room_model.findOne({room: prob.room}, function(err, room) {
+								if(err) {
+									res.send('500');
+								} else {
+									if(room != null) {
+										room.points -= prob.score;
+										room.save(function(rError){
+											prob.remove(function(pError) {
+												if(rError | pError) {
+													res.send('500');
+												} else {
+													res.send('200');
+												}
+											});	
+										});
+									} else {
+										res.send('404');
+									}
+								}
+							});
+
+						} else {
+							res.send('404');
+						}
+					}
+				});
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
 	return router;
 }
+
