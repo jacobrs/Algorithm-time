@@ -170,6 +170,79 @@ module.exports = function(models) {
 		});
 	});
 
+	router.get('/edit/:nickname', function(req, res, next){
+		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn && (data.user.level == viewUtils.level.ADMIN || data.user.nickname == req.params.nickname)) {
+				models.user_model.findOne({nickname: req.params.nickname}, function(err, user){
+					if(err) {
+						viewUtils.load(res, 'user/edit', {error_msg: "Error connecting to the database"});
+					} else {
+						if(user != null) {
+							data.profile = user;
+							viewUtils.load(res, 'user/edit', data);
+						} else {
+							res.redirect('/error');
+						}
+					}
+				});
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
+	router.post('/edit/:nickname', function(req, res, next) {
+ 		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn && (data.user.level == viewUtils.level.ADMIN || data.user.nickname == req.params.nickname)) {
+				models.user_model.findOne({nickname: req.params.nickname}, function(err, user){
+					if(err) {
+						viewUtils.load(res, 'user/edit', {error_msg: "Error connecting to the database"});
+					} else {
+						if(user != null) {
+							// Set the data
+							user.fullname = xss(req.body.fullname);
+							user.email = xss(req.body.email.toLowerCase());
+
+							// If password is set
+							if(req.body.password.length > 0) {
+								user.password = xss(sha256(req.body.password));
+							}
+
+							models.user_model.findOne({email: user.email}, function(err, userForEmail){
+
+								// Store user's profile
+								data.profile = user;
+
+								// Already exists
+								if(userForEmail != null && userForEmail.nickname != user.nickname) {
+									data.error_msg = "This email already exists, please type another one";
+									viewUtils.load(res, 'user/edit', data);
+								} else {
+									
+									// Save new user
+									user.save(function(err) {
+										if(err){
+											viewUtils.load(res, 'user/edit', {error_msg: "Couldn't connect to DB. Try again."});
+											console.log("Coudn't save user to DB: " + err);
+										} else {
+											data.success_msg="Successfully updated";
+											viewUtils.load(res, 'user/edit', data);
+										}
+									});
+								}
+							});
+
+						} else {
+							res.redirect('/error');
+						}
+					}
+				});
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
 	router.get('/login', function(req, res, next) {
  		viewUtils.initializeSession(req, {}, models, function(data){
 			if(data.loggedIn) {
