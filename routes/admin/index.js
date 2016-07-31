@@ -33,11 +33,12 @@ module.exports = function(models){
 		admin(req, res, function(data){
 			models.session_model.find({}, function(error, sessions){
 				models.user_model.find({}, function(err, users){
+					console.log(sessions);
 					for(var i=0; i < sessions.length; i++) {
 						sessions[i].nickname = "Not available";
 						for(var j=0; j < users.length; j++) {
 							if(sessions[i].id == users[j]._id) {
-								sessions[i].nickname = users[i].nickname;
+								sessions[i].nickname = users[j].nickname;
 								break;
 							}
 						}
