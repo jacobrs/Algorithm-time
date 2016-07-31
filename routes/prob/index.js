@@ -134,5 +134,119 @@ module.exports = function(models) {
 		});
 	});
 
+	router.get('/edit/:id', function(req, res, next) {
+		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
+				models.prob_model.findOne({id: req.params.id}, function(err, prob){
+					if(err) {
+						res.redirect('/error');
+						console.log("Error: " + err);
+					} else {
+						if(prob != null) {
+						
+							// Store prob
+							data.prob = prob;
+
+							// Get list of rooms
+							models.room_model.find({}, function(err, rooms) {
+								if(err) {
+									res.redirect('/error');
+									console.log('Error: ' + err);
+								} else {
+									data.rooms = rooms;
+									viewUtils.load(res, "prob/edit", data);
+								}
+							});
+
+						} else {
+							console.log('/error');
+						}
+					}
+				});
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
+	router.post('/edit/:id', function(req, res, next) {
+		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
+				models.prob_model.findOne({id: req.params.id}, function(err, prob){
+					if(err) {
+						res.redirect('/error');
+						console.log("Error: " + err);
+					} else {
+						if(prob != null) {
+						
+							// Get list of rooms
+							models.room_model.find({}, function(err, rooms) {
+								if(err) {
+									res.redirect('/error');
+									console.log('Error: ' + err);
+								} else {
+									
+									var probOldScore = prob.score;
+									var roomOldId = prob.room;
+
+									prob.title = req.body.title;
+									prob.room = req.body.room;
+									prob.description = req.body.description;
+									prob.score = req.body.score;
+									
+									data.rooms = rooms;
+									data.prob = prob;
+
+									if(!viewUtils.isset(prob.title) || !viewUtils.isset(prob.room) || !viewUtils.isset(prob.description) || !viewUtils.isset(prob.score)) {
+										data.error_msg="Missing fields";
+										viewUtils.load(res, 'prob/edit', data);
+									} else {
+										var room1 = undefined;
+										var room2 = undefined;
+										for(var i=0; i < rooms.length; i++) {
+											if(rooms[i].room == roomOldId) {
+												rooms[i].points -= probOldScore;
+												room1 = rooms[i];
+											}
+											
+											if(rooms[i].room == prob.room) {
+												rooms[i].points += prob.score;
+												room2 = rooms[i];
+											}
+										}
+
+										if(room1 == undefined || room2 == undefined) {
+											data.error_msg = "Room not found";
+											viewUtils.load(res, 'prob/edit', data);
+										} else {
+											room1.save(function(r1Error){
+												room2.save(function(r2Error){
+													prob.save(function(pError){
+														if(r1Error || r2Error || pError) {
+															data.error_msg="Error connecting to the database";
+															viewUtils.load(res, 'prob/edit', data);
+														} else {
+															data.success_msg="Problem updated";
+															viewUtils.load(res, 'prob/edit', data);
+														}
+													});
+												});
+											});
+										}
+									}
+								}
+							});
+
+						} else {
+							console.log('/error');
+						}
+					}
+				});
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
 	return router;
 }

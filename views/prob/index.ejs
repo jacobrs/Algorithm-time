@@ -2,7 +2,7 @@
 	<br><br>
 	<div class="panel panel-default">
 	  <!-- Default panel contents -->
-	  <div class="panel-heading"><strong><%= prob.title %></strong><span class="label label-success right"><%= prob.score %> points</span></div>
+	  <div class="panel-heading"><strong><%= prob.title %></strong> <% if(user.level == level.ADMIN){%><a href="<%=base_url%>/prob/edit/<%=prob.id%>" class="label label-info">Edit problem</a><%}%><span class="label label-success right"><%= prob.score %> points</span></div>
 	  <div class="panel-body">
 	    <p><%- prob.description %></p>
 	  </div>

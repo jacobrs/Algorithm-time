@@ -39,4 +39,8 @@ utils.load = function(res, page, data) {
 	res.render('template/user/template.ejs', data);
 }
 
+utils.isset = function(obj) {
+	return typeof obj !== 'undefined' && obj.toString().trim() != "";
+}
+
 module.exports = utils;
