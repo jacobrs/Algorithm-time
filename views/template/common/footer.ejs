@@ -2,9 +2,6 @@
 		<hr>
 			</span><span id="connected_users" class="label label-primary">0 Connected Users</span>
 		</div>
-		<script src = "/js/jquery-1.12.3.min.js"></script>
-		<script src = "/js/bootstrap.min.js"></script>
-		<script src = "/js/socket.io.js"></script>  
 		<script>  
 			var socket = io();
 			socket.on('user_count', function(count){
