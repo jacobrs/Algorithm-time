@@ -2,7 +2,7 @@
 	<br><br>
 	<div class="panel panel-default">
 	  <!-- Default panel contents -->
-	  <div class="panel-heading"><strong><%= room.title %></strong><span class="label label-success right"><%= room.points %> points</span></div>
+	  <div class="panel-heading"><strong><%= room.title %></strong> <%if(user.level == level.ADMIN){%><a href="<%=base_url%>/room/edit/<%=room.room%>" class="label label-info">Edit room</a><%}%><span class="label label-success right"><%= room.points %> points</span></div>
 	  <div class="panel-body">
 	    <p><%= room.description %></p>
 	  </div>

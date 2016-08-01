@@ -149,5 +149,62 @@ module.exports = function(models) {
 		});
 	});
 
+	router.get('/edit/:id', function(req, res, next){
+		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
+	  			models.room_model.findOne({room: req.params.id}, function(err, room){
+					if(err) {
+						console.log("Error: " + err);
+						res.redirect('/error');
+					} else {
+						if(room != null) {
+							data.room = room;
+							viewUtils.load(res, 'room/edit', data);
+						} else {
+							res.redirect('/error');
+						}
+					}
+				});
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
+	router.post('/edit/:id', function(req, res, next){
+		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
+	  			models.room_model.findOne({room: req.params.id}, function(err, room){
+					if(err) {
+						console.log("Error: " + err);
+						res.redirect('/error');
+					} else {
+						if(room != null) {
+
+							room.title = req.body.title;
+							room.description = req.body.description;
+							data.room = room;
+
+							room.save(function(err){
+								if(err){
+									data.error_msg = "Error connecting to the database";
+									viewUtils.load(res, 'room/edit', data);
+								} else {
+									data.success_msg = "Room updated";
+									viewUtils.load(res, 'room/edit', data);
+								}
+							});
+						} else {
+							res.redirect('/error');
+						}
+					}
+				});
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
 	return router;
 }
+
