@@ -56,6 +56,7 @@ var session = require('./routes/session/index')(models);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'eps');
 app.set('view cache', false);
+app.set('socketio', app.io);
 
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -103,6 +104,7 @@ app.use(function(err, req, res, next) {
 
 // start listen with socket.io
 app.io.on('connection', function(socket){
+  var finalRoute = socket.request.headers.referer.split('/').pop();
   var user = "guest";
   try{
     var cookief = socket.request.headers.cookie;
@@ -130,6 +132,8 @@ app.io.on('connection', function(socket){
     }
     app.io.sockets.emit('user_count', clients.length);
     console.log('a user disconnect');
+
+    console.log(clients);
   });
 });
 

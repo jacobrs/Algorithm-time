@@ -7,6 +7,46 @@
 			socket.on('user_count', function(count){
 				$("#connected_users").text(parseInt(count) + " Connected User" + ((count!=1)?"s":""));
 			});
+			<% if(main_page.split("/").pop() == "leaderboard"){ %>
+				var months = ["January", "February", "March", "April", "May", "June", "July", "August", "Septembter", "October", "November", "December"];
+				socket.on('leaderboard', function(payload){
+					var board = document.getElementById("leaderboard");
+					var userrows = document.getElementsByClassName("user-row");
+					for(var i = 0; i < payload.users.length; i++){
+						var d = new Date(payload.users[i].lastLogin);
+						var row = "";
+						if(userrows.length > i){
+							row = userrows[i];
+							var nickname = row.children[1];
+							var fullname = row.children[2];
+							var date = row.children[3];
+							var points = row.children[4];	
+						}else{
+							row = board.insertRow(i+1);
+							var rank = row.insertCell(0);
+							var nickname = row.insertCell(1);
+							var fullname = row.insertCell(2);
+							var date = row.insertCell(3);
+							var points = row.insertCell(4);	
+							rank.innerHTML = i + 1;
+						}
+						if(payload.users[i].lastLogin == null){
+							date.innerHTML = "Never";
+						}else{
+							date.innerHTML = months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();		
+						}
+						
+						nickname.innerHTML = payload.users[i].nickname;
+						fullname.innerHTML = payload.users[i].fullname;
+						points.innerHTML = '<span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;' + payload.users[i].score;
+
+						row.className = "user-row";
+						if(payload.users[i].nickname == payload.currentUser){
+							row.className += " info";
+						}
+					}
+				});
+			<% } %>
 		</script> 
 	</body>
 </html>
