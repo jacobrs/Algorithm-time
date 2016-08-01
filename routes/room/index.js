@@ -88,5 +88,66 @@ module.exports = function(models) {
 	  });
 	});
 
+	router.get('/delete/:id', function(req, res, next) {
+	  	viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn && data.user.level == viewUtils.level.ADMIN) {
+
+				// Find room to delete
+				models.room_model.findOne({room: req.params.id}, function(err, room){
+					if(err) {
+						res.send('500');
+					} else {
+						if(room != null) {
+
+							// Find problems in that room
+							models.prob_model.find({room: req.params.id}, function(err, probs){
+								if(err) {
+									res.send('500');
+								} else {
+									
+									var probsId = [];
+									for(var i=0; i<probs.length; i++) {
+										probsId.push(probs[i].id);
+									}
+
+									// Remove user problem entries
+									models.user_prob_model.remove({prob: {$in: probsId}}, function(err){
+										room.remove(function(err) {
+											if(err) {
+												res.send('500');
+											} else {
+												
+												// Remove problems
+												models.prob_model.remove({room: req.params.id}, function(err) {
+													if(err) {
+														res.send('500');
+													} else {
+
+														// Remove room
+														room.remove(function(err){
+															if(err) {
+																res.send('500');
+															} else {
+																res.send('200');
+															}
+														});
+													}
+												});
+											}
+										});	
+									});
+								}
+							});
+						} else {
+							res.send('404');
+						}
+					}
+				});
+			} else {
+				res.redirect('/error');
+			}
+		});
+	});
+
 	return router;
 }
