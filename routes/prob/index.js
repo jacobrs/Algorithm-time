@@ -5,6 +5,7 @@ module.exports = function(models) {
 	var router = express.Router();
 	var ObjectId = require('mongodb').ObjectID;
 
+	// Submit a problem for review, and admin will need to review the submission before points are awarded
 	router.get('/review/:id(\\d+)/', function (req, res, next) {
 		models.prob_model.findOne({id: req.params.id}, function(err, prob){
 			data = {prob:prob};
@@ -32,6 +33,8 @@ module.exports = function(models) {
 		});
 	});
 
+	// Mark a submission as valid, awarding points to the user who completed it
+	// ADMIN ONLY
 	router.get('/complete/:id/', function (req, res, next) {
 		models.user_prob_model.findOne({_id: new ObjectId(req.params.id)}, function(error, rel){
 			data = {rel:rel};
@@ -41,13 +44,56 @@ module.exports = function(models) {
 				}else{
 					rel.complete = true;
 					rel.save(function(err){
-						res.redirect('/submissions');
+						var io = req.app.get('socketio');
+						var currUser = "";
+						if(typeof data.user != "undefined"){
+							currUser = data.user.nickname;
+						}
+						models.user_model.aggregate([
+						    {
+						        $lookup:{
+						              from: "userprobs",
+						              localField: "nickname",
+						              foreignField: "user",
+						              as: "solved"
+						            }
+						    },
+						    {
+						        $project:{
+						            "_id":1,
+						            "nickname":1,
+						            "fullname":1,
+						            "lastLogin":1,
+						            "solved": {
+						               $filter: {
+						                "input": "$solved",
+						                "as": "solved",
+						                "cond": { "$eq": [ "$$solved.complete", true ] }
+						              }
+						            }
+						        }
+						    }
+						], function(error, users){
+							data.users = users;
+							data.currentUser = currUser;
+							for(var i = 0; i < users.length; i++){
+								users[i].score = 0;
+								for(var j = 0; j < users[i].solved.length; j++){
+									users[i].score += users[i].solved[j].score;
+								}
+							}
+							data.users.sort(function(a, b){return b.score-a.score});
+	    				io.emit('leaderboard', data);
+							res.redirect('/submissions');
+						});
 					});	
 				}
 			});
 		});
 	});
 
+	// Mark a submission as invalid, this will not award points and will make it so the user has to resubmit
+	// ADMIN ONLY
 	router.get('/incomplete/:id/', function (req, res, next) {
 		viewUtils.initializeSession(req, data, models, function(data){
 			if(data.user == undefined || data.user.level == viewUtils.level.ADMIN){
@@ -60,6 +106,8 @@ module.exports = function(models) {
 		});
 	});
 
+	// Create a problem
+	// ADMIN ONLY
 	router.get('/create/:id(\\d+)/', function (req, res, next) {
 		models.room_model.findOne({room: req.params.id}, function(err, room){
 			data = {room:room};
@@ -73,6 +121,7 @@ module.exports = function(models) {
 		});
 	});
 
+	// View a specific problem's details and offer the ability to submit
 	router.get('/:id(\\d+)/', function (req, res, next) {
 		models.prob_model.findOne({id: req.params.id}, function(err, prob){
 			data = {prob:prob, submitted:false, complete:false};

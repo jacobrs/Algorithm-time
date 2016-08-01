@@ -2,7 +2,7 @@
 	<div class="main-title text-center">
 		<h3>Algorithm Time Leaderboard</h3>
 	</div>
-	<table class="table table-striped">
+	<table class="table table-striped" id="leaderboard">
 		<tr>
 			<th># Rank</th>
 			<th>Nickname</th>
@@ -11,9 +11,9 @@
 			<th>Points</th>
 		</tr>
 		<% for(var i=0; i<users.length; i++) {%>
-			<tr <% if (users[i].nickname == currentUser) { %>class="info"<% } %>>
+			<tr class="user-row <% if (users[i].nickname == currentUser) { %>info<% } %>">
 				<td><%= i+1 %></td>
-		  	<td><%= users[i].nickname %></td>
+		  	<td id="username"><%= users[i].nickname %></td>
 		  	<td><%= users[i].fullname %></td>
 		  	<% if (users[i].lastLogin == null) { %>
 		  		<td>Never</td>
