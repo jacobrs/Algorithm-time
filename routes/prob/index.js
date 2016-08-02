@@ -43,6 +43,7 @@ module.exports = function(models) {
 					res.redirect('/');
 				}else{
 					rel.complete = true;
+					rel.accept = true;
 					rel.save(function(err){
 						var io = req.app.get('socketio');
 						var currUser = "";
@@ -95,10 +96,18 @@ module.exports = function(models) {
 	// Mark a submission as invalid, this will not award points and will make it so the user has to resubmit
 	// ADMIN ONLY
 	router.get('/incomplete/:id/', function (req, res, next) {
-		viewUtils.initializeSession(req, data, models, function(data){
+		viewUtils.initializeSession(req, {}, models, function(data){
 			if(data.user == undefined || data.user.level == viewUtils.level.ADMIN){
-				models.user_prob_model.remove({_id: new ObjectId(req.params.id)}, function(error, rel){
-					res.redirect('/submissions');
+				models.user_prob_model.findOne({_id: new ObjectId(req.params.id)}, function(error, rel){
+					rel.accept = false;
+					rel.complete = true;
+					rel.save(function(err) {
+						if(err) {
+							res.redirect('/error');
+						} else {
+							res.redirect('/submissions');
+						}
+					});
 				});
 			}else{
 				res.redirect('/');
@@ -124,16 +133,19 @@ module.exports = function(models) {
 	// View a specific problem's details and offer the ability to submit
 	router.get('/:id(\\d+)/', function (req, res, next) {
 		models.prob_model.findOne({id: req.params.id}, function(err, prob){
-			data = {prob:prob, submitted:false, complete:false};
+			data = {prob:prob, complete:true, accept:false};
 			viewUtils.initializeSession(req, data, models, function(data){
 				if(data.user == undefined){
-					res.redirect('/');
+					res.redirect('/error');
 				}else{
 					models.user_prob_model.find({user: data.user.nickname, prob: prob.id}, function(err, rels){
 						if(rels.length > 0){
-							data.submitted = true;
-							data.complete = rels[0].complete;
+							for(var i=0; i < rels.length; i++) {
+								data.complete = data.complete && rels[i].complete;
+								data.accept = data.accept || rels[i].accept;
+							}
 						}
+						data.rels = rels;
 						viewUtils.load(res, 'prob/index', data);	
 					});
 				}

@@ -5,6 +5,7 @@ var userProbModel = new mongoose.Schema({
 	prob: Number,
 	score: Number,
 	complete: Boolean,
+	accept: Boolean,
 	date: Date
 });
 

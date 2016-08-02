@@ -9,18 +9,25 @@
 
 	  <!-- List group -->
 	  <div class="list-group">
-	    <% if(user.level != 6 && (!submitted || submitted == undefined)) { %>
-	    <a href="<%= __base_url %>/prob/review/<%= prob.id %>" class="list-group-item">
-	    	<span class="glyphicon glyphicon-flag" aria-hidden="true"></span>&nbsp;&nbsp;Ask for solution review 
-	    </a>
-	    <% }else if (submitted && (!complete || complete == undefined)){ %>
+		<div class="list-group-item">
+			<h5><b>Submission history</b></h5>
+			<%if(rels.length == 0){%><i>No submission found</i><%}%>
+			<%for(var i=0; i < rels.length; i++){%>
+			<p>- <%=rels[i].date%> - <%if(rels[i].accept){%>Accepted<%}else if(rels[i].complete){%>Not accepted<%}else{%>Pending<%}%></p>
+			<%}%>
+		</div>
+	    <% if(accept) { %>
+	    <div class="list-group-item" style="background-color:#dff0d8">
+	    	<span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;&nbsp;Problem complete and reviewed
+	    </div>
+	    <% }else if (!complete){ %>
 	    <div class="list-group-item" style="background-color:#d9edf7">
 	    	<span class="glyphicon glyphicon-flag" aria-hidden="true"></span>&nbsp;&nbsp;Pending review
 	    </div>
 	    <% } else { %>
-	    <div class="list-group-item" style="background-color:#dff0d8">
-	    	<span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;&nbsp;Problem complete and reviewed
-	    </div>
+	    <a href="<%= __base_url %>/prob/review/<%= prob.id %>" class="list-group-item">
+	    	<span class="glyphicon glyphicon-flag" aria-hidden="true"></span>&nbsp;&nbsp;Ask for solution review 
+	    </a>
 	    <% } %>
 	    <a href="<%= __base_url %>/room/<%= prob.room %>" class="list-group-item">
 	    	<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>&nbsp;&nbsp;Back to room 
