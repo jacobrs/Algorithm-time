@@ -64,7 +64,8 @@ module.exports = function(models) {
 								{
 									$match:
 									{
-										user: data.profile.nickname
+										user: data.profile.nickname,
+										accept: true
 									}
 								}
 							], function(err, problems){

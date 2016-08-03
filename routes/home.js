@@ -43,7 +43,7 @@ module.exports = function(models){
 			               $filter: {
 			                "input": "$solved",
 			                "as": "solved",
-			                "cond": { "$eq": [ "$$solved.complete", true ] }
+			                "cond": { "$eq": [ "$$solved.accept", true ] }
 			              }
 			            }
 			        }
