@@ -209,6 +209,11 @@ module.exports = function(models) {
 								user.password = xss(sha256(req.body.password));
 							}
 
+							// Allow admin to change user level
+							if(data.user.level == viewUtils.level.ADMIN) {
+								user.level = req.body.level;
+							}
+
 							models.user_model.findOne({email: user.email}, function(err, userForEmail){
 
 								// Store user's profile
