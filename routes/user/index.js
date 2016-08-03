@@ -124,7 +124,7 @@ module.exports = function(models) {
 				user.password = xss(sha256(req.body.password));
 				user.score = 0;
 				user.date = new Date();
-				user.level = 2;
+				user.level = viewUtils.level.USER;
 				user.lastLogin = null;
 
 				// Logging
@@ -173,7 +173,7 @@ module.exports = function(models) {
 
 	router.get('/edit/:nickname', function(req, res, next){
 		viewUtils.initializeSession(req, {}, models, function(data){
-			if(data.loggedIn && (data.user.level == viewUtils.level.ADMIN || data.user.nickname == req.params.nickname)) {
+			if(data.loggedIn && (data.user.level == viewUtils.level.ADMIN || (data.user.nickname == req.params.nickname && data.user.level == viewUtils.level.USER))) {
 				models.user_model.findOne({nickname: req.params.nickname}, function(err, user){
 					if(err) {
 						viewUtils.load(res, 'user/edit', {error_msg: "Error connecting to the database"});
@@ -245,6 +245,49 @@ module.exports = function(models) {
 				});
 			} else {
 				res.redirect('/error');
+			}
+		});
+	});
+
+	router.get('/guest', function(req, res, next){
+		viewUtils.initializeSession(req, {}, models, function(data){
+			if(data.loggedIn) {
+				res.redirect('profile');
+			} else {
+				
+				var randNickname = "at_" + parseInt(Math.random()*10000000+1000);
+				models.user_model.findOne({nickname: randNickname}, function(err, guest){
+					if(err){
+						res.redirect('/error');
+					} else {
+						if(guest != null) {
+							console.log('Duplicate guest nicknames, trying again ...');
+							res.redirect('/user/guest');
+						} else {
+							
+							// Create a new tmp user
+							var user = new models.user_model;
+							user.nickname = randNickname;
+							user.fullname = randNickname;
+							user.email = "";
+							user.password = "";
+							user.score = 0;
+							user.date = new Date();
+							user.level = viewUtils.level.GUEST;
+							user.lastLogin = new Date();
+
+							user.save(function(err){
+								if(err) {
+									res.redirect('/error');
+								} else {
+									var session = new models.session_model;
+									var key = generateRandomKey(120);
+									getAKeyAndRedirect(session, key, user, res);
+								}
+							});
+						}
+					}
+				});
 			}
 		});
 	});
