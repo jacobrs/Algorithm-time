@@ -67,5 +67,17 @@ module.exports = function(models){
 			});
 		});
 	});
+
+	router.get('/delete_guests', function(req, res, next){
+		admin(req, res, function(data){
+			models.user_model.remove({level: viewUtils.level.GUEST}, function(err){
+				if(err){
+					res.send('500');
+				} else {
+					res.send('200');
+				}
+			});
+		});
+	});
 	return router;
 }
