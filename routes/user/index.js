@@ -54,7 +54,8 @@ module.exports = function(models) {
 							data.profile = user;
 							models.user_prob_model.aggregate([
 								{
-									$lookup:{
+									$lookup:
+									{
 									  from: "probs",
 									  localField: "prob",
 									  foreignField: "id",

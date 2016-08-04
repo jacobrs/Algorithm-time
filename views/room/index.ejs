@@ -24,4 +24,27 @@
 
 	  </div>
 	</div>
+	<h3>Leaderboards</h3>
+	<table class="table table-striped" id="leaderboard">
+		<tr>
+			<th># Rank</th>
+			<th>Nickname</th>
+			<th>Points</th>
+			<th>Completed</th>
+		</tr>
+		<% if(room_leaderboards.length > 0){ %>
+			<% for(var i = 0; i < room_leaderboards.length; i++) {%>
+				<tr class="user-row <% if (room_leaderboards[i]._id == user.nickname) { %>info<% } %>">
+					<td><%= i+1 %></td>
+					<td id="username"><%= room_leaderboards[i]._id %></td>
+				  	<td><span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;<%= room_leaderboards[i].totalScore %></td>
+				  	<td><%= room_leaderboards[i].count %>/<%= probs.length %></td>
+				</tr>
+			<% } %>
+		<% }else{ %>
+		    	<tr>
+		    		<td colspan="4">Be the first to complete a problem</td>
+		    	</tr>
+		<% } %>
+	</table>
 </div>
