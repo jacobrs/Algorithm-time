@@ -102,6 +102,12 @@ module.exports = function(models) {
 			  				$unwind: "$userprobs"
 			  			},
 			  			{
+			  				$match:
+			  				{
+			  					"userprobs.accept": true
+			  				}
+			  			},
+			  			{
 			  				$group:
 			  				{
 			  					_id: "$userprobs.user",
