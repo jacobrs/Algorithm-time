@@ -36,8 +36,14 @@
 				<% if(main_page.split("/").pop() == "leaderboard"){ %> class="active" <% } %>
 				><a href="<%=__base_url%>/leaderboard">
 				<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>&nbsp;&nbsp;Leaderboard</a></li>
+				<% if(loggedIn == true){ %>
+				<li role="presentation"
+				<% if(main_page.split("/").reverse()[1] == "challenge"){ %> class="active" <% } %>
+				><a href="<%=__base_url%>/challenge">
+				<span class="glyphicon glyphicon-knight" aria-hidden="true"></span>&nbsp;&nbsp;Challenge</a></li>
+				<% } %>
 				<li role="presentation" 
-				<% if(main_page.split("/").pop() == "index" && main_page.split("/")[main_page.split("/").length-2] != "room" && main_page.split("/")[main_page.split("/").length-2] != "prob"){ %> class="active" <% } %>
+				<% if(main_page.split("/").pop() == "index" && main_page.split("/").reverse()[1] != "challenge" && main_page.split("/")[main_page.split("/").length-2] != "room" && main_page.split("/")[main_page.split("/").length-2] != "prob"){ %> class="active" <% } %>
 				><a href="<%=__base_url%>">
 				<span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;&nbsp;Home</a></li>
 			</ul>

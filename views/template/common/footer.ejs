@@ -47,6 +47,89 @@
 					}
 				});
 			<% } %>
+			<% if(main_page.split("/").reverse()[1] == "challenge"){ %>
+				var challenge = io.connect("<%=base_url%>/challenge");
+
+				function setJoinRoom(room_number){
+					$('tr[class^=room_].clicked').removeClass('clicked');
+					$('.room_'+room_number).addClass('clicked');
+
+					$('.challenge-join-button').removeClass('disabled');
+					$('.challenge-join-button').attr('onclick', 'joinRoom('+room_number+')');
+				}
+
+				function joinRoom(room_number){
+
+				}
+
+				challenge.on('challenge_rooms_update', function(data){
+					// Load all of the available rooms
+					var table = $('#challenge_rooms');
+					var rows  = $('#challenge_rooms [class^=room_]');
+
+					if(Object.keys(data.rooms).length > 0){
+						$('#challenge_rooms_empty').hide();
+						$(rows).remove();
+						var table_rows = "";
+
+						for(var key in data.rooms){
+							table_rows += "<tr class='room_"+key+"' onclick='setJoinRoom("+key+")'>";
+							table_rows += 	"<td>"+data.rooms[key].title+"</td>";
+							table_rows += 	"<td>"+data.type_names[data.rooms[key].type - 1]+"</td>";
+							table_rows += 	"<td>1200</td>";
+							table_rows += 	"<td>"+data.rooms[key].team_1[0].nickname+"</td>";
+							table_rows += "</td>";
+						}
+
+						$('#challenge_rooms_header').after(table_rows);
+					}else{
+						$('#challenge_rooms_empty').show();
+						$(rows).remove();
+
+						$('.challenge-join-button').addClass('disabled');
+						$('.challenge-join-button').removeAttr('onclick');
+					}
+				});
+
+				challenge.on('create_challenge_response', function(data){
+					if(data.response == "success"){
+						// Redirect to the new room
+						window.location.href = "<%=base_url%>/challenge/room/"+data.room_number;
+					}
+				});
+
+				function createChallengeRoom(){
+					// Handle collecting the data and error handling here
+					var title    = $('#create_room_title').val();
+					var option   = $('#create_room_game_option').val();
+					var password = $('#create_room_password').val();
+					var error    = false;
+					var errorMsg = "";
+
+					if(title == ""){
+						error    = true;
+						errorMsg = "You need a title\n";
+					}
+
+					if(!error){
+						$('#create_room_error').hide();
+
+						var room = {}
+						room.title  = title;
+						room.option = option;
+						room.password = password;
+
+						// Request a room be created by the server
+						challenge.emit("create_challenge", room);
+					}else{
+						$('#create_room_error').html("<p>"+errorMsg+"</p>");
+						$('#create_room_error').show();
+					}
+				}
+			<% } %>
+			<% if(main_page.split("/").reverse()[2] + "/" + main_page.split("/").reverse()[1] == "challenge/room"){ %>
+				var challenge_room = io.connect("<%=base_url%>/challenge");
+			<% } %>
 		</script> 
 	</body>
 </html>
