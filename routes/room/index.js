@@ -124,8 +124,6 @@ module.exports = function(models) {
 			  		], function(err, leaderboards){
 			  			data.room_leaderboards = leaderboards;
 
-			  			console.log(leaderboards);
-
 			  			viewUtils.load(res, 'room/index', data);
 			  		});
 			  	}).sort({score:1});	

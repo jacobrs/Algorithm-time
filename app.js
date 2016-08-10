@@ -16,6 +16,7 @@ var cookie = require('cookie');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var xss = require('xss');
+var viewUtils = require('./libs/viewUtils');
 
 // Connect to DB
 var models = {};
@@ -51,6 +52,7 @@ var prob = require('./routes/prob/index')(models);
 var install = require('./routes/install/index')(models);
 var admin = require('./routes/admin/index')(models);
 var session = require('./routes/session/index')(models);
+var challenge = require('./routes/challenge/index')(models);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -72,6 +74,7 @@ app.use('/prob', prob);
 app.use('/install', install);
 app.use('/admin', admin);
 app.use('/session', session);
+app.use('/challenge', challenge);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -101,11 +104,11 @@ app.use(function(err, req, res, next) {
   res.redirect('/error');
 });
 
-
-// start listen with socket.io
+// Socket based events
 app.io.on('connection', function(socket){
   var finalRoute = socket.request.headers.referer.split('/').pop();
   var user = "guest";
+
   try{
     var cookief = socket.request.headers.cookie;
     var cookies = cookieParser.JSONCookies(cookie.parse(cookief));
@@ -120,9 +123,11 @@ app.io.on('connection', function(socket){
     }
     user = user+mod;
   }
+
   if(clients.indexOf(user) == -1){
     clients.push(user);
   }
+
   console.log(clients);
   app.io.sockets.emit('user_count', clients.length);
 
@@ -136,5 +141,126 @@ app.io.on('connection', function(socket){
     console.log(clients);
   });
 });
+
+
+// Handle challenge events
+app.challenge = {};
+app.challenge.MAX_ROOM_SIZE = [1, 3];
+app.challenge.challenge_rooms = {};
+app.challenge.type_names = ["OneVsOne", "Relay"];
+
+function emitChallengeRoomsUpdate(socket){
+  var temp_rooms = app.challenge.challenge_rooms;
+  for(var key in temp_rooms){
+    delete temp_rooms[key].password;
+
+    for(var i = 0; i < temp_rooms[key].team_1.length; i++){
+      delete temp_rooms[key].team_1[i].session;
+    }
+
+    for(var i = 0; i < temp_rooms[key].team_2.length; i++){
+      delete temp_rooms[key].team_2[i].session;
+    }
+  }
+
+  var data = {};
+  data.rooms = temp_rooms;
+  data.type_names = app.challenge.type_names;
+
+  socket.emit("challenge_rooms_update", data);
+}
+
+app.io.of('/challenge')
+   .on('connection', function(socket){
+      var finalRoute = socket.request.headers.referer.split('/').pop();
+      var route  = socket.request.headers.referer.split('/');
+      var rRoute = route.reverse();
+
+      if(rRoute[0] == "challenge"){
+        emitChallengeRoomsUpdate(socket);
+      }
+
+      if(rRoute[2] + "/" + rRoute[1] == "challenge/room"){
+        socket.join("challenge/room/"+finalRoute);
+      }
+
+      socket.on("join_challenge", function(data){
+          // Try connecting to the given room
+
+      });
+
+      socket.on("create_challenge", function(data){
+          // Handle errors here
+          if(typeof data.title === "undefined" || typeof data.option === "undefined" || typeof data.password === "undefined"){
+            this.emit("create_challenge_response", { response: "failure" });
+          }
+
+          var room   = {};
+          room.title = data.title;
+          room.type  = data.option;
+          room.password = data.password;
+          room.team_1   = [];
+          room.team_2   = [];
+
+          var room_number = 0;
+          for(key in app.challenge.challenge_rooms){
+            if(app.challenge.challenge_rooms[key + 1] === undefined){
+              room_number = key + 1;
+            }
+          }
+          room.room_number = room_number;
+          app.challenge.challenge_rooms[room_number] = room;
+
+          // Get all of the current user's data
+          var cookies = cookieParser.JSONCookies(cookie.parse(socket.request.headers.cookie));
+          viewUtils.initializeSession({ cookies: cookies }, 
+            {}, models, function(data){
+            if(data.loggedIn){
+              var currentUser = {};
+              currentUser.nickname = data.user.nickname;
+              currentUser.session  = cookies.session.key;
+
+              app.challenge.challenge_rooms[room_number].team_1.push(currentUser);
+
+              socket.emit("create_challenge_response", { response: "success", room_number: room_number });
+
+              emitChallengeRoomsUpdate(app.io.of('/challenge'));
+            }else{
+              // Guests cannot create rooms
+              socket.emit("create_challenge_response", { response: "failure" });
+            }
+          });
+      });
+      
+      socket.on("disconnect", function(socket){
+        var cookies = cookieParser.JSONCookies(cookie.parse(this.request.headers.cookie));
+
+        if(rRoute[2] + "/" + rRoute[1] == "challenge/room"){
+          this.leave("challenge/room/"+finalRoute);
+
+          var currentRooms = app.challenge.challenge_rooms[finalRoute];
+
+          // Remove the user from the room
+          for(var i = 0; i < currentRooms.team_1.length || i < currentRooms.team_2.length; i++){
+            if(i < currentRooms.team_1.length && currentRooms.team_1[i].session == cookies.session.key){
+              app.challenge.challenge_rooms[finalRoute].team_1.splice(i, 1);
+              break;
+            }else if(i < currentRooms.team_2.length && currentRooms.team_2[i].session == cookies.session.key){
+              app.challenge.challenge_rooms[finalRoute].team_2.splice(i, 1);
+              break;
+            }
+          }
+
+          if(currentRooms.team_1.length + currentRooms.team_2.length == 1){
+            // delete the room and update the rooms page
+            delete app.challenge.challenge_rooms[finalRoute];
+
+            emitChallengeRoomsUpdate(app.io.of('/challenge'));
+          }else{
+            app.io.of('/challenge').to('challenge/room/'+finalRoute).emit("update_room");
+          }
+        }
+      });
+   });
 
 module.exports = app;
