@@ -58,6 +58,15 @@
 					$('.challenge-join-button').attr('onclick', 'joinRoom('+room_number+')');
 				}
 
+				function switchGameType(value){
+					switch(value){
+						case 1:
+						default:
+							$('#create_room_game_type').html('OneVsOne <span class="caret"></span>');
+							$('#create_room_game_type').val(value);
+					}
+				}
+
 				function joinRoom(room_number){
 
 				}
@@ -101,7 +110,7 @@
 				function createChallengeRoom(){
 					// Handle collecting the data and error handling here
 					var title    = $('#create_room_title').val();
-					var option   = $('#create_room_game_option').val();
+					var option   = $('#create_room_game_type').val();
 					var password = $('#create_room_password').val();
 					var error    = false;
 					var errorMsg = "";

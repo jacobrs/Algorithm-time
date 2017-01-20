@@ -8,19 +8,22 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-md-12">
-            <div class="col-md-4">
+            <div class="col-md-12 create_room_option">
               <label>Title</label><br>
               <input type="text" id="create_room_title" />
             </div>
-            <div class="col-md-4">
-              <label>Game Type</label><br>
-              <select id="create_room_game_option">
-                <option value="1" selected>OneVsOne</option>
-              </select>
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-12 create_room_option">
               <label>Password</label><br>
               <input type="password" id="create_room_password" />
+            </div>
+            <div class="col-md-12 create_room_option">
+              <label>Game Type</label><br>
+              <button id="create_room_game_type" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Game Type <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a onclick="switchGameType(1);">OneVsOne</a></li>
+              </ul>
             </div>
           </div>
         </div>

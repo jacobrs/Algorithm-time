@@ -12,46 +12,26 @@
   height: 100%; }
 
 .challenge-create-button{
-  background-color: #4CAF50;
-  height: 60px; 
-  -webkit-box-shadow: 3px 4px 3px 2px rgba(0,0,0,0.75);
-  -moz-box-shadow: 3px 4px 3px 2px rgba(0,0,0,0.75);
-  box-shadow: 3px 4px 3px 2px rgba(0,0,0,0.75); }
+  height: 100%;
+  color: black; }
 
 .challenge-create-button:hover{
-  background-color: #2E7D32;
-  cursor: pointer; 
-  -webkit-box-shadow: 3px 4px 3px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 3px 4px 3px 0px rgba(0,0,0,0.75);
-  box-shadow: 3px 4px 3px 0px rgba(0,0,0,0.75); }
+  background-color: #f9f9f9;
+  cursor: pointer; }
 
 .challenge-join-button{
-  background-color: #03A9F4;
-  height: 60px; 
-  -webkit-box-shadow: 3px 4px 3px 2px rgba(0,0,0,0.75);
-  -moz-box-shadow: 3px 4px 3px 2px rgba(0,0,0,0.75);
-  box-shadow: 3px 4px 3px 2px rgba(0,0,0,0.75); }
+  height: 100%;
+  color: black; }
 
 .challenge-join-button:hover{
-  background-color: #0277BD;
-  cursor: pointer; 
-  -webkit-box-shadow: 3px 4px 3px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 3px 4px 3px 0px rgba(0,0,0,0.75);
-  box-shadow: 3px 4px 3px 0px rgba(0,0,0,0.75); }
+  background-color: #f9f9f9;
+  cursor: pointer; }
 
 .challenge-join-button.disabled{
-  background-color: grey; 
-  cursor: default;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none; }
+  cursor: default; }
 
 .challenge-join-button.disabled:hover{
-  background-color: grey; 
-  cursor: default;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none; }
+  cursor: default; }
 
 .challenge-button-container{
   padding-left: 5px;
@@ -59,12 +39,18 @@
 
 .challenge-button-text{
   width: 100%;
-  font-size: 1.5em;
-  color: white;
-  padding-top: 0.3em; }
+  font-size: 1.25em;
+  padding-top: 0.3em;
+  text-align: center; }
 
-#create_room_modal .modal-body select{
+#create_room_modal .modal-dialog{
+  width: 400px; }
+
+#create_room_modal .modal-body button, #create_room_modal .modal-body ul, #create_room_modal .modal-body input{
   width: 100%; }
+
+#create_room_modal .modal-body ul{
+  margin-top: -0.8em; }
 
 #create_room_error{
     width: 200px;
@@ -79,3 +65,20 @@ tr[class^="room_"]:hover{
 
 tr[class^="room_"].clicked{
   background-color: #d9edf7; }
+
+.create_room_option{
+  padding-bottom: 1em; }
+
+.challenge-main-container table{
+  border-left: none;
+  border-right: none;
+  border-bottom: none; }
+
+.challenge-button-container:first-child{
+  border-right: 1px solid #ddd; }
+
+.challenge-main-container .table-container .panel-body{
+  padding: 0em; }
+
+.challenge-button-container{
+  padding: 0em; }

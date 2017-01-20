@@ -195,6 +195,7 @@ app.io.of('/challenge')
             this.emit("create_challenge_response", { response: "failure" });
           }
 
+          // Create a room for the challenge
           var room   = {};
           room.title = data.title;
           room.type  = data.option;
@@ -238,26 +239,28 @@ app.io.of('/challenge')
         if(rRoute[2] + "/" + rRoute[1] == "challenge/room"){
           this.leave("challenge/room/"+finalRoute);
 
-          var currentRooms = app.challenge.challenge_rooms[finalRoute];
+          var currentRoom = app.challenge.challenge_rooms[finalRoute];
 
-          // Remove the user from the room
-          for(var i = 0; i < currentRooms.team_1.length || i < currentRooms.team_2.length; i++){
-            if(i < currentRooms.team_1.length && currentRooms.team_1[i].session == cookies.session.key){
-              app.challenge.challenge_rooms[finalRoute].team_1.splice(i, 1);
-              break;
-            }else if(i < currentRooms.team_2.length && currentRooms.team_2[i].session == cookies.session.key){
-              app.challenge.challenge_rooms[finalRoute].team_2.splice(i, 1);
-              break;
+          if(typeof currentRoom !== "undefined"){
+            // Remove the user from the room
+            for(var i = 0; i < currentRoom.team_1.length || i < currentRoom.team_2.length; i++){
+              if(i < currentRoom.team_1.length && currentRoom.team_1[i].session == cookies.session.key){
+                app.challenge.challenge_rooms[finalRoute].team_1.splice(i, 1);
+                break;
+              }else if(i < currentRoom.team_2.length && currentRoom.team_2[i].session == cookies.session.key){
+                app.challenge.challenge_rooms[finalRoute].team_2.splice(i, 1);
+                break;
+              }
             }
-          }
 
-          if(currentRooms.team_1.length + currentRooms.team_2.length == 1){
-            // delete the room and update the rooms page
-            delete app.challenge.challenge_rooms[finalRoute];
+            if(currentRoom.team_1.length + currentRoom.team_2.length == 1){
+              // delete the room and update the rooms page
+              delete app.challenge.challenge_rooms[finalRoute];
 
-            emitChallengeRoomsUpdate(app.io.of('/challenge'));
-          }else{
-            app.io.of('/challenge').to('challenge/room/'+finalRoute).emit("update_room");
+              emitChallengeRoomsUpdate(app.io.of('/challenge'));
+            }else{
+              app.io.of('/challenge').to('challenge/room/'+finalRoute).emit("update_room");
+            }
           }
         }
       });
